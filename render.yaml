@@ -1,0 +1,46 @@
+services:
+  # Web Service
+  - type: web
+    name: justsplitapp-web
+    env: static
+    rootDir: apps/web/dist
+    buildCommand: pnpm --filter @justsplitapp/web build
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://justsplitapp-server.onrender.com
+    envVars:
+      - key: VITE_API_URL
+        value: https://justsplitapp-server.onrender.com
+      - key: VITE_FEATURE_FLAGS
+        value: recommendations:false,ocr:true,chat:true,mockMode:false
+
+  # Server Service
+  - type: web
+    name: justsplitapp-server
+    env: node
+    rootDir: apps/server
+    buildCommand: pnpm --filter @justsplitapp/server build
+    startCommand: pnpm --filter @justsplitapp/server start:prod
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: justsplitapp-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FEATURE_FLAGS
+        value: recommendations:false,ocr:true,chat:true,mockMode:false
+      - key: FOURSQUARE_API_KEY
+        sync: false
+
+databases:
+  - name: justsplitapp-db
+    databaseName: justsplitapp
+    user: justsplitapp

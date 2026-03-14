@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@justsplitapp/ui": ["./packages/ui/src"],
+      "@justsplitapp/tokens": ["./packages/tokens/src"],
+      "@justsplitapp/types": ["./packages/types/src"],
+      "@justsplitapp/utils": ["./packages/utils/src"],
+      "@justsplitapp/testing": ["./packages/testing/src"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".next"]
+}

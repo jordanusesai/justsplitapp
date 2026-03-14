@@ -1,0 +1,44 @@
+{
+  "name": "justsplitapp",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Production-grade monorepo for justsplitapp (web + mobile + server)",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "scripts": {
+    "setup": "node tools/setup.mjs",
+    "dev:all": "pnpm -w run setup && concurrently -n server,web,mobile \"pnpm --filter apps/server dev\" \"pnpm --filter apps/web dev\" \"pnpm --filter apps/mobile start\"",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "storybook": "pnpm --filter apps/web storybook",
+    "component-gallery": "pnpm --filter apps/mobile start:storybook",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.8.1",
+    "@commitlint/config-conventional": "^17.8.1",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "turbo": "^1.12.4",
+    "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

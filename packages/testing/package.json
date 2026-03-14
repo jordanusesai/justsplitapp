@@ -1,0 +1,22 @@
+{
+  "name": "@justsplitapp/testing",
+  "version": "0.1.0",
+  "description": "Testing utilities for JustSplit",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@justsplitapp/types": "workspace:*",
+    "@justsplitapp/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/react-native": "^12.4.2",
+    "@testing-library/jest-dom": "^6.2.0",
+    "typescript": "^5.3.3"
+  }
+}

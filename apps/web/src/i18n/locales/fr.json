@@ -1,0 +1,50 @@
+{
+  "common": {
+    "split": "Diviser",
+    "history": "Historique",
+    "settings": "Paramètres",
+    "home": "Accueil",
+    "add": "Ajouter",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "home": {
+    "title": "JustSplit",
+    "subtitle": "Divisez les factures et dépenses avec des amis",
+    "newSplit": "Nouvelle Division",
+    "recentSplits": "Divisions Récentes",
+    "noSplits": "Aucune division encore. Créez votre première!"
+  },
+  "split": {
+    "title": "Diviser la Facture",
+    "amount": "Montant",
+    "description": "Description",
+    "participants": "Participants",
+    "addParticipant": "Ajouter un Participant",
+    "splitEqually": "Diviser Également",
+    "splitByAmount": "Diviser par Montant",
+    "total": "Total",
+    "perPerson": "Par Personne",
+    "settleUp": "Régler"
+  },
+  "history": {
+    "title": "Historique",
+    "noHistory": "Pas d'historique encore",
+    "date": "Date",
+    "amount": "Montant",
+    "participants": "Participants"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "currency": "Devise",
+    "theme": "Thème",
+    "darkMode": "Mode Sombre",
+    "lightMode": "Mode Clair"
+  }
+}

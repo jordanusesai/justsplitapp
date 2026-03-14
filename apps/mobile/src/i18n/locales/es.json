@@ -1,0 +1,50 @@
+{
+  "common": {
+    "split": "Dividir",
+    "history": "Historial",
+    "settings": "Configuración",
+    "home": "Inicio",
+    "add": "Agregar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "home": {
+    "title": "JustSplit",
+    "subtitle": "Divide cuentas y gastos con amigos",
+    "newSplit": "Nueva División",
+    "recentSplits": "Divisiones Recientes",
+    "noSplits": "No hay divisiones aún. ¡Crea tu primera!"
+  },
+  "split": {
+    "title": "Dividir Cuenta",
+    "amount": "Cantidad",
+    "description": "Descripción",
+    "participants": "Participantes",
+    "addParticipant": "Agregar Participante",
+    "splitEqually": "Dividir Igualmente",
+    "splitByAmount": "Dividir por Cantidad",
+    "total": "Total",
+    "perPerson": "Por Persona",
+    "settleUp": "Liquidar"
+  },
+  "history": {
+    "title": "Historial",
+    "noHistory": "No hay historial aún",
+    "date": "Fecha",
+    "amount": "Cantidad",
+    "participants": "Participantes"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "currency": "Moneda",
+    "theme": "Tema",
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@justsplitapp/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for JustSplit",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "style-dictionary build",
+    "dev": "style-dictionary build",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "style-dictionary": "^3.9.2",
+    "typescript": "^5.3.3"
+  }
+}

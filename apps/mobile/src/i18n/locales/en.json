@@ -1,0 +1,50 @@
+{
+  "common": {
+    "split": "Split",
+    "history": "History",
+    "settings": "Settings",
+    "home": "Home",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "home": {
+    "title": "JustSplit",
+    "subtitle": "Split bills and expenses with friends",
+    "newSplit": "New Split",
+    "recentSplits": "Recent Splits",
+    "noSplits": "No splits yet. Create your first one!"
+  },
+  "split": {
+    "title": "Split Bill",
+    "amount": "Amount",
+    "description": "Description",
+    "participants": "Participants",
+    "addParticipant": "Add Participant",
+    "splitEqually": "Split Equally",
+    "splitByAmount": "Split by Amount",
+    "total": "Total",
+    "perPerson": "Per Person",
+    "settleUp": "Settle Up"
+  },
+  "history": {
+    "title": "History",
+    "noHistory": "No history yet",
+    "date": "Date",
+    "amount": "Amount",
+    "participants": "Participants"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "currency": "Currency",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  }
+}
