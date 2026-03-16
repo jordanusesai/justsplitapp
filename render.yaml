@@ -1,7 +1,7 @@
 services:
   # Development Services
   - type: web
-    name: justsplitapp-server-dev
+    name: api-justsplitapp-dev
     env: node
     branch: dev
     rootDir: apps/server
@@ -30,7 +30,7 @@ services:
         value: "*"
 
   - type: static_site
-    name: justsplitapp-web-dev
+    name: justsplitapp-dev
     branch: dev
     rootDir: apps/web
     buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/web build
@@ -38,15 +38,15 @@ services:
     autoDeploy: true
     envVars:
       - key: VITE_API_URL
-        value: http://justsplitapp-server-dev.onrender.com:4000
+        value: http://api.justsplitapp-dev.onrender.com:4000
       - key: VITE_WS_URL
-        value: ws://justsplitapp-server-dev.onrender.com:4000
+        value: ws://api.justsplitapp-dev.onrender.com:4000
       - key: VITE_FEATURE_FLAGS
         fromGroup: justsplitapp-dev
 
   # Production Services
   - type: web
-    name: justsplitapp-server-prod
+    name: api-justsplitapp-prod
     env: node
     branch: main
     rootDir: apps/server
@@ -72,10 +72,10 @@ services:
       - key: CURRENCY_PROVIDER
         value: frankfurter
       - key: CORS_ORIGIN
-        value: https://justsplitapp-web-prod.onrender.com
+        value: https://justsplit.app
 
   - type: static_site
-    name: justsplitapp-web-prod
+    name: justsplitapp-prod
     branch: main
     rootDir: apps/web
     buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/web build
@@ -83,9 +83,9 @@ services:
     autoDeploy: true
     envVars:
       - key: VITE_API_URL
-        value: https://justsplitapp-server-prod.onrender.com:4000
+        value: https://api.justsplit.app:4000
       - key: VITE_WS_URL
-        value: wss://justsplitapp-server-prod.onrender.com:4000
+        value: wss://api.justsplit.app:4000
       - key: VITE_FEATURE_FLAGS
         fromGroup: justsplitapp-prod
 
