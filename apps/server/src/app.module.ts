@@ -7,6 +7,7 @@ import { FeatureFlagsModule } from './modules/feature-flags/feature-flags.module
 import { SplitsModule } from './modules/splits/splits.module'
 import { UsersModule } from './modules/users/users.module'
 import { WebSocketsModule } from './modules/websockets/websockets.module'
+import { OCRModule } from './modules/ocr/ocr.module'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { WebSocketsModule } from './modules/websockets/websockets.module'
     SplitsModule,
     UsersModule,
     WebSocketsModule,
+    OCRModule,
   ],
   controllers: [AppController],
   providers: [AppService],

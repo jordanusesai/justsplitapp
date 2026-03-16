@@ -48,7 +48,21 @@ export interface FeatureFlags {
   recommendations: boolean
   ocr: boolean
   chat: boolean
-  mockMode: boolean
+}
+
+export interface OCRResult {
+  merchant: string;
+  date?: string;
+  total: number;
+  items: OCRItem[];
+  tax?: number;
+  confidence: number;
+}
+
+export interface OCRItem {
+  description: string;
+  amount: number;
+  quantity?: number;
 }
 
 export interface ApiResponse<T = any> {
