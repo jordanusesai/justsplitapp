@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { clsx } from 'clsx'
+import { useTranslation } from 'react-i18next'
 
 export interface Participant {
   id: string
@@ -23,6 +24,7 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
   disabled = false,
   className
 }) => {
+  const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedIds, setSelectedIds] = useState<string[]>([])
 
@@ -48,8 +50,8 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={placeholder}
           disabled={disabled}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          aria-label="Search participants"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
+          aria-label={t('participants.searchLabel', 'Search participants')}
         />
         <div className="absolute inset-y-0 right-0 flex items-center pr-3">
           <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,9 +64,18 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
         {filteredParticipants.map(participant => (
           <div
             key={participant.id}
+            role="checkbox"
+            aria-checked={selectedIds.includes(participant.id)}
+            tabIndex={disabled ? -1 : 0}
             onClick={() => !disabled && toggleParticipant(participant.id)}
+            onKeyDown={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                !disabled && toggleParticipant(participant.id);
+              }
+            }}
             className={clsx(
-              'flex items-center p-3 rounded-lg border cursor-pointer transition-colors',
+              'flex items-center p-3 rounded-lg border cursor-pointer transition-colors min-h-[44px]',
               selectedIds.includes(participant.id)
                 ? 'border-blue-500 bg-blue-50'
                 : 'border-gray-200 hover:border-gray-300',

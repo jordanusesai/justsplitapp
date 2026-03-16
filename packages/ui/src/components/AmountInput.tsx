@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { clsx } from 'clsx'
+import { useTranslation } from 'react-i18next'
 
 export interface AmountInputProps {
   value: number
@@ -18,6 +19,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   disabled = false,
   className
 }) => {
+  const { t } = useTranslation()
   const [isFocused, setIsFocused] = useState(false)
 
   const handleValueChange = (newValue: string) => {
@@ -37,7 +39,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }
 
   return (
-    <div className="relative">
+    <div className="relative" role="group" aria-label={t('addExpense.amountGroup', 'Expense amount')}>
       <div
         className={clsx(
           'flex items-center border rounded-lg px-4 py-3 bg-white',
@@ -49,6 +51,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       >
         <input
           type="text"
+          inputMode="decimal"
           value={isFocused ? value.toString() : formatValue(value)}
           onChange={(e) => handleValueChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
@@ -56,13 +59,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           placeholder={placeholder}
           disabled={disabled}
           className="flex-1 outline-none text-lg font-medium"
-          aria-label={`Amount in ${currency}`}
+          aria-label={t('addExpense.amountLabel', `Amount in ${currency}`)}
+          aria-invalid={value < 0}
         />
         <button
           type="button"
-          className="ml-2 px-2 py-1 text-sm text-gray-600 hover:text-gray-800"
+          className="ml-2 px-3 py-2 min-h-[44px] min-w-[44px] text-sm text-gray-600 hover:text-gray-800 rounded-md focus:ring-2 focus:ring-blue-500"
           disabled={disabled}
-          aria-label="Switch currency"
+          aria-label={t('addExpense.switchCurrency', `Switch currency from ${currency}`)}
         >
           {currency}
         </button>
