@@ -1,19 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-export interface Place {
-  fsq_id: string;
-  name: string;
-  location: {
-    address?: string;
-    cross_street?: string;
-    formatted_address?: string;
-    locality?: string;
-    region?: string;
-  };
-  categories: Array<{ name: string }>;
-  distance?: number;
-}
+import { Place } from '@justsplitapp/types';
 
 @Injectable()
 export class PlacesService {
@@ -21,7 +8,7 @@ export class PlacesService {
   private readonly apiKey: string;
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('FOURSQUARE_API_KEY');
+    this.apiKey = this.configService.get<string>('FOURSQUARE_API_KEY') || '';
   }
 
   async searchNearby(lat: number, lon: number, query?: string): Promise<Place[]> {
@@ -32,10 +19,10 @@ export class PlacesService {
 
     try {
       // In a real implementation, we would use fetch or axios to call Foursquare API
-      // For now, we provide the structure and return mock data if the key is default
+      // For now, we return mock data with the isMock flag
       return this.getMockPlaces();
     } catch (error) {
-      this.logger.error('Error fetching places from Foursquare', error.stack);
+      this.logger.error('Error fetching places from Foursquare', error instanceof Error ? error.stack : String(error));
       return this.getMockPlaces();
     }
   }
@@ -52,6 +39,7 @@ export class PlacesService {
         },
         categories: [{ name: 'Coffee Shop' }],
         distance: 150,
+        isMock: true,
       },
       {
         fsq_id: 'mock-2',
@@ -63,6 +51,7 @@ export class PlacesService {
         },
         categories: [{ name: 'Grocery Store' }],
         distance: 450,
+        isMock: true,
       },
       {
         fsq_id: 'mock-3',
@@ -74,6 +63,7 @@ export class PlacesService {
         },
         categories: [{ name: 'Italian Restaurant' }],
         distance: 800,
+        isMock: true,
       }
     ];
   }

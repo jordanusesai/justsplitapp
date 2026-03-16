@@ -1,22 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-
-interface FeatureFlags {
-  recommendations: boolean
-  ocr: boolean
-  chat: boolean
-  mockMode: boolean
-}
+import { FeatureFlags } from '@justsplitapp/types'
 
 export function useFeatureFlags() {
   return useQuery<FeatureFlags>({
     queryKey: ['feature-flags'],
     queryFn: async () => {
-      const flagsString = import.meta.env.VITE_FEATURE_FLAGS || 'recommendations:true,ocr:true,chat:true,mockMode:true'
+      const flagsString = import.meta.env.VITE_FEATURE_FLAGS || 'recommendations:true,ocr:true,chat:true'
       const flags: FeatureFlags = {
         recommendations: true,
         ocr: true,
         chat: true,
-        mockMode: true,
       }
       
       flagsString.split(',').forEach((flag) => {

@@ -18,21 +18,33 @@ export const ListItem: React.FC<ListItemProps> = ({
   onClick,
   style,
 }) => {
-  const Container = onClick ? TouchableOpacity : View;
-
-  return (
-    <Container 
-      onPress={onClick} 
-      style={[styles.container, style]}
-      activeOpacity={0.7}
-    >
+  const content = (
+    <>
       {leading && <View style={styles.leading}>{leading}</View>}
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>{title}</Text>
         {subtitle && <Text style={styles.subtitle} numberOfLines={1}>{subtitle}</Text>}
       </View>
       {trailing && <View style={styles.trailing}>{trailing}</View>}
-    </Container>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <TouchableOpacity 
+        onPress={onClick} 
+        style={[styles.container, style]}
+        activeOpacity={0.7}
+      >
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return (
+    <View style={[styles.container, style]}>
+      {content}
+    </View>
   );
 };
 

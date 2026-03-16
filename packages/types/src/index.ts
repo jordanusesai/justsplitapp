@@ -34,6 +34,9 @@ export interface CreateSplitDto {
   amount: number
   currency: string
   participants: Omit<Participant, 'paid' | 'settledAt'>[]
+  exchangeRate?: number
+  exchangeRateProvider?: string
+  exchangeRateTimestamp?: number
 }
 
 export interface UpdateSplitDto {
@@ -57,6 +60,7 @@ export interface OCRResult {
   items: OCRItem[];
   tax?: number;
   confidence: number;
+  isMock?: boolean;
 }
 
 export interface OCRItem {
@@ -84,6 +88,34 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     total: number
     totalPages: number
   }
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface LoginDto {
+  email: string;
+}
+
+export interface VerifyTokenDto {
+  token: string;
+}
+
+export interface Place {
+  fsq_id: string;
+  name: string;
+  location: {
+    address?: string;
+    cross_street?: string;
+    formatted_address?: string;
+    locality?: string;
+    region?: string;
+  };
+  categories: Array<{ name: string }>;
+  distance?: number;
+  isMock?: boolean;
 }
 
 export * from './chat'

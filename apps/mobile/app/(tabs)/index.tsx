@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { FAB } from '@justsplitapp/ui';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
 
   const mockBalances = {
@@ -100,6 +104,12 @@ export default function HomeScreen() {
           </View>
         </View>
       </ScrollView>
+
+      <FAB 
+        icon={<Ionicons name="add" size={30} color="#fff" />} 
+        label={t('home.addExpense')} 
+        onPress={() => router.push('/add')} 
+      />
     </SafeAreaView>
   );
 }

@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common'
 import { SplitsService } from './splits.service'
+import { CreateSplitDto } from '@justsplitapp/types'
 
 @Controller('api/splits')
 export class SplitsController {
@@ -11,7 +12,7 @@ export class SplitsController {
   }
 
   @Post()
-  create(@Body() createSplitDto: any) {
+  create(@Body() createSplitDto: CreateSplitDto) {
     return this.splitsService.create(createSplitDto)
   }
 }

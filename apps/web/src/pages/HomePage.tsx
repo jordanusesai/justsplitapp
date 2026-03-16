@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Button, RecommendationCard } from '@justsplitapp/ui'
+import { useNavigate } from 'react-router-dom'
+import { Card, Button, RecommendationCard, FAB } from '@justsplitapp/ui'
 
 export function HomePage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null)
   const [recommendations, setRecommendations] = useState<any[]>([])
 
@@ -120,6 +122,12 @@ export function HomePage() {
           <p>{t('home.noExpenses', 'No expenses yet—add your first one.')}</p>
         </Card>
       </div>
+
+      <FAB 
+        icon="+" 
+        label={t('home.addExpense', 'Add Expense')} 
+        onClick={() => navigate('/add')} 
+      />
     </div>
   )
 }

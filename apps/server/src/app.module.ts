@@ -11,6 +11,8 @@ import { OCRModule } from './modules/ocr/ocr.module'
 import { CurrencyModule } from './modules/currency/currency.module'
 import { PlacesModule } from './modules/places/places.module'
 import { ChatModule } from './modules/chat/chat.module'
+import { AuthModule } from './modules/auth/auth.module'
+import { StorageModule } from './modules/storage/storage.module'
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ChatModule } from './modules/chat/chat.module'
     CurrencyModule,
     PlacesModule,
     ChatModule,
+    AuthModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

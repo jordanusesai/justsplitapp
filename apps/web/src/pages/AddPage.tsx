@@ -1,19 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AmountInput, ParticipantSelector, Button, Card, LoadingSpinner, SplitSelector } from '@justsplitapp/ui'
-import { OCRResult, ParticipantSplit } from '@justsplitapp/types'
+import { AmountInput, ParticipantSelector, Button, Card, ReceiptCard, SplitSelector } from '@justsplitapp/ui'
+import { OCRResult, ParticipantSplit, CreateSplitDto, ChatMessage } from '@justsplitapp/types'
+import { io, Socket } from 'socket.io-client'
 
 export function AddPage() {
   const { t } = useTranslation()
   const [amount, setAmount] = useState(0)
   const [currency, setCurrency] = useState('USD')
+  const [description, setDescription] = useState('')
   const [selectedParticipants, setSelectedParticipants] = useState<any[]>([])
-  const [isScanning, setIsScanning] = useState(false)
-  const [ocrResult, setOcrResult] = useState<OCRResult | null>(null)
+  const [ocrStatus, setOcrStatus] = useState<'idle' | 'scanning' | 'completed' | 'error'>('idle')
+  const [ocrResult, setOcrResult] = useState<OCRResult | undefined>(undefined)
   const [srAnnouncement, setSrAnnouncement] = useState('')
   const [splits, setSplits] = useState<ParticipantSplit[]>([])
   const [rateInfo, setRateInfo] = useState<{ rate: number; provider: string; timestamp: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const socketRef = useRef<Socket | null>(null)
+
+  useEffect(() => {
+    const socketUrl = import.meta.env.VITE_WS_URL || 'http://localhost:4000'
+    socketRef.current = io(`${socketUrl}/chat`)
+    return () => {
+      socketRef.current?.disconnect()
+    }
+  }, [])
 
   const mockParticipants = [
     { id: '1', name: 'John Doe', avatar: '' },
@@ -41,7 +52,7 @@ export function AddPage() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    setIsScanning(true)
+    setOcrStatus('scanning')
     setSrAnnouncement(t('addExpense.scanningStarted', 'Starting receipt scan...'))
 
     setTimeout(() => {
@@ -61,14 +72,53 @@ export function AddPage() {
       }
       setOcrResult(result)
       setAmount(result.total)
-      setIsScanning(false)
+      setOcrStatus('completed')
       setSrAnnouncement(t('addExpense.scanningComplete', 'Receipt scanned successfully. Total amount updated.'))
     }, 2000)
   }
 
-  const handleCreateExpense = () => {
-    console.log('Creating expense:', { amount, currency, participants: selectedParticipants, splits, ocrResult, rate: rateInfo })
-    setSrAnnouncement(t('addExpense.expenseCreated', 'Expense created successfully.'))
+  const handleCreateExpense = async () => {
+    if (amount <= 0 || selectedParticipants.length === 0) return;
+
+    const payload: CreateSplitDto = {
+      title: description || t('addExpense.defaultTitle', 'New Expense'),
+      amount,
+      currency,
+      participants: selectedParticipants.map(p => ({
+        userId: p.id,
+        name: p.name,
+        amount: splits.find(s => s.userId === p.id)?.amount || 0,
+      })),
+      exchangeRate: rateInfo?.rate,
+      exchangeRateProvider: rateInfo?.provider,
+      exchangeRateTimestamp: rateInfo?.timestamp,
+    }
+
+    // Post to chat if connected
+    if (socketRef.current) {
+      const chatMsg: Partial<ChatMessage> = {
+        id: Math.random().toString(36).substr(2, 9),
+        senderId: 'current-user',
+        senderName: 'Me',
+        type: 'expenseCard',
+        content: payload.title,
+        timestamp: new Date().toISOString(),
+        status: 'sent',
+      };
+      socketRef.current.emit('sendMessage', chatMsg);
+    }
+
+    // Simulate navigation/success before server confirms
+    setTimeout(() => {
+      setSrAnnouncement(t('addExpense.expenseCreated', 'Expense created successfully with locked exchange rate.'))
+      // In a real app, we would use navigate('/activity') or similar
+      alert(t('addExpense.successAlert', 'Expense saved! (Optimistic update)'))
+    }, 500)
+
+    console.log('Creating expense with rate-lock:', payload)
+    
+    // In a real app, this would be a fetch/axios call to /api/splits
+    // await fetch('/api/splits', { method: 'POST', body: JSON.stringify(payload) })
   }
 
   return (
@@ -85,107 +135,89 @@ export function AddPage() {
       </div>
 
       <div className="space-y-6">
+        <ReceiptCard 
+          status={ocrStatus}
+          result={ocrResult}
+          onClear={() => {
+            setOcrResult(undefined)
+            setOcrStatus('idle')
+          }}
+          onRetry={() => {
+            setOcrStatus('idle')
+            fileInputRef.current?.click()
+          }}
+        />
+
         <Card>
           <div className="p-6 space-y-6">
-            {isScanning ? (
-              <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                <LoadingSpinner size="lg" />
-                <p className="text-blue-600 font-medium">{t('addExpense.parsingReceipt', 'Parsing receipt...')}</p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('addExpense.amount', 'Amount')}
+              </label>
+              <AmountInput
+                value={amount}
+                onChange={setAmount}
+                currency={currency}
+                placeholder="0.00"
+                className="w-full"
+              />
+              {rateInfo && (
+                <p className="mt-2 text-[10px] text-gray-400">
+                  Rate: 1 USD = {rateInfo.rate} EUR • Provider: {rateInfo.provider} • {new Date(rateInfo.timestamp).toLocaleTimeString()}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('addExpense.participants', 'Participants')}
+              </label>
+              <ParticipantSelector
+                participants={mockParticipants}
+                onSelectionChange={handleParticipantsChange}
+                placeholder={t('addExpense.searchParticipants', 'Search participants...')}
+                className="w-full"
+              />
+            </div>
+
+            {selectedParticipants.length > 0 && (
+              <div className="pt-4 border-t border-gray-100">
+                <label className="block text-sm font-medium text-gray-700 mb-4">
+                  {t('addExpense.splitMethod', 'How to split?')}
+                </label>
+                <SplitSelector
+                  totalAmount={amount}
+                  participants={selectedParticipants}
+                  onChange={setSplits}
+                />
               </div>
-            ) : (
-              <>
-                {ocrResult && (
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 space-y-2 mb-4">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-bold text-blue-900">{ocrResult.merchant}</h3>
-                      <button 
-                        onClick={() => setOcrResult(null)}
-                        className="text-xs text-blue-600 hover:text-blue-800"
-                      >
-                        {t('common.clear', 'Clear')}
-                      </button>
-                    </div>
-                    <div className="text-xs text-blue-700 space-y-1">
-                      {ocrResult.items.map((item, i) => (
-                        <div key={i} className="flex justify-between">
-                          <span>{item.description}</span>
-                          <span>${item.amount.toFixed(2)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('addExpense.amount', 'Amount')}
-                  </label>
-                  <AmountInput
-                    value={amount}
-                    onChange={setAmount}
-                    currency={currency}
-                    placeholder="0.00"
-                    className="w-full"
-                  />
-                  {rateInfo && (
-                    <p className="mt-2 text-[10px] text-gray-400">
-                      Rate: 1 USD = {rateInfo.rate} EUR • Provider: {rateInfo.provider} • {new Date(rateInfo.timestamp).toLocaleTimeString()}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('addExpense.participants', 'Participants')}
-                  </label>
-                  <ParticipantSelector
-                    participants={mockParticipants}
-                    onSelectionChange={handleParticipantsChange}
-                    placeholder={t('addExpense.searchParticipants', 'Search participants...')}
-                    className="w-full"
-                  />
-                </div>
-
-                {selectedParticipants.length > 0 && (
-                  <div className="pt-4 border-t border-gray-100">
-                    <label className="block text-sm font-medium text-gray-700 mb-4">
-                      {t('addExpense.splitMethod', 'How to split?')}
-                    </label>
-                    <SplitSelector
-                      totalAmount={amount}
-                      participants={selectedParticipants}
-                      onChange={setSplits}
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('addExpense.descriptionLabel', 'Description (optional)')}
-                  </label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder={t('addExpense.descriptionPlaceholder', 'What was this expense for?')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
-                    rows={3}
-                  />
-                </div>
-
-                <Button
-                  onClick={handleCreateExpense}
-                  disabled={amount <= 0 || selectedParticipants.length === 0}
-                  className="w-full min-h-[56px]"
-                  size="lg"
-                >
-                  {t('addExpense.create', 'Create Expense')}
-                </Button>
-              </>
             )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('addExpense.descriptionLabel', 'Description (optional)')}
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder={t('addExpense.descriptionPlaceholder', 'What was this expense for?')}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
+                rows={3}
+              />
+            </div>
+
+            <Button
+              onClick={handleCreateExpense}
+              disabled={amount <= 0 || selectedParticipants.length === 0}
+              className="w-full min-h-[56px]"
+              size="lg"
+            >
+              {t('addExpense.create', 'Create Expense')}
+            </Button>
           </div>
         </Card>
 
-        {!isScanning && (
+        {ocrStatus === 'idle' && (
           <div className="text-center text-sm text-gray-500 space-y-4">
             <p>{t('addExpense.or', 'or')}</p>
             <input
