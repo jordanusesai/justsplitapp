@@ -18,6 +18,7 @@ export class OCRService {
           total: 42.50,
           tax: 3.50,
           confidence: 0.95,
+          isMock: true,
           items: [
             { description: 'Organic Milk', amount: 5.99, quantity: 1 },
             { description: 'Avocados (3ct)', amount: 4.50, quantity: 1 },

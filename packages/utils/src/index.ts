@@ -63,3 +63,41 @@ export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text
   return text.substr(0, maxLength) + '...'
 }
+
+/**
+ * Observability & Analytics
+ */
+
+export interface AnalyticsEvent {
+  name: string
+  properties?: Record<string, any>
+  timestamp: number
+}
+
+export const trackEvent = (name: string, properties?: Record<string, any>) => {
+  const event: AnalyticsEvent = {
+    name,
+    properties,
+    timestamp: Date.now(),
+  }
+  
+  // In a real app, send to Segment, Mixpanel, etc.
+  console.log(`[Analytics] ${name}`, properties)
+  
+  return event
+}
+
+export const reportError = (error: Error, context?: Record<string, any>) => {
+  // In a real app, send to Sentry, Bugsnag, etc.
+  console.error(`[Error Reporting]`, {
+    message: error.message,
+    stack: error.stack,
+    ...context,
+  })
+}
+
+export const logger = {
+  info: (message: string, context?: any) => console.log(`[INFO] ${message}`, context || ''),
+  warn: (message: string, context?: any) => console.warn(`[WARN] ${message}`, context || ''),
+  error: (message: string, context?: any) => console.error(`[ERROR] ${message}`, context || ''),
+}

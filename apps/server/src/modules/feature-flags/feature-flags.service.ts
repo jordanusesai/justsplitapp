@@ -4,7 +4,6 @@ export interface FeatureFlags {
   recommendations: boolean
   ocr: boolean
   chat: boolean
-  mockMode: boolean
 }
 
 @Injectable()
@@ -12,7 +11,7 @@ export class FeatureFlagsService {
   private flags: FeatureFlags
 
   constructor() {
-    this.flags = this.parseFlags(process.env.FEATURE_FLAGS || 'recommendations:true,ocr:true,chat:true,mockMode:true')
+    this.flags = this.parseFlags(process.env.FEATURE_FLAGS || 'recommendations:true,ocr:true,chat:true')
   }
 
   private parseFlags(flagsString: string): FeatureFlags {
@@ -20,7 +19,6 @@ export class FeatureFlagsService {
       recommendations: true,
       ocr: true,
       chat: true,
-      mockMode: true,
     }
 
     flagsString.split(',').forEach((flag) => {

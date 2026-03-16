@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useRouter } from 'expo-router';
+
 export default function GroupsScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const mockGroups = [
     { id: '1', name: 'Roommates', members: 4, totalExpenses: 1250.50, color: '#3B82F6' },
@@ -18,14 +21,26 @@ export default function GroupsScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.title}>{t('groups.title', 'Groups')}</Text>
-          <TouchableOpacity style={styles.addButton} accessibilityLabel="Add new group">
+          <TouchableOpacity 
+            style={styles.addButton} 
+            accessibilityLabel="Add new group"
+            onPress={() => console.log('Add group')}
+          >
             <Ionicons name="add" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.groupsList}>
           {mockGroups.map((group) => (
-            <TouchableOpacity key={group.id} style={styles.groupCard} accessibilityRole="button">
+            <TouchableOpacity 
+              key={group.id} 
+              style={styles.groupCard} 
+              accessibilityRole="button"
+              onPress={() => router.push({
+                pathname: `/group/${group.id}`,
+                params: { name: group.name }
+              })}
+            >
               <View style={[styles.groupIcon, { backgroundColor: group.color }]}>
                 <Text style={styles.groupIconText}>{group.name.charAt(0)}</Text>
               </View>

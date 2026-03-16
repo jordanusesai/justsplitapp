@@ -44,7 +44,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="history"
+        name="activity"
         options={{
           title: t('nav.activity', 'Activity'),
           tabBarIcon: ({ color }) => <Ionicons name="list" size={24} color={color} />,

@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useRouter } from 'expo-router';
+
 export default function ProfileScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [notifications, setNotifications] = React.useState(true);
   const [location, setLocation] = React.useState(false);
   const [darkMode, setDarkMode] = React.useState(false);
@@ -86,6 +89,17 @@ export default function ProfileScreen() {
               <View style={styles.settingInfo}>
                 <Ionicons name="lock-closed-outline" size={22} color="#4B5563" />
                 <Text style={styles.settingLabel}>{t('profile.changePassword', 'Change Password')}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
+            </TouchableOpacity>
+            <View style={styles.divider} />
+            <TouchableOpacity 
+              style={styles.settingRow}
+              onPress={() => router.push('/component-gallery')}
+            >
+              <View style={styles.settingInfo}>
+                <Ionicons name="apps-outline" size={22} color="#4B5563" />
+                <Text style={styles.settingLabel}>Component Gallery</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
             </TouchableOpacity>
