@@ -10,6 +10,7 @@ import { WebSocketsModule } from './modules/websockets/websockets.module'
 import { OCRModule } from './modules/ocr/ocr.module'
 import { CurrencyModule } from './modules/currency/currency.module'
 import { PlacesModule } from './modules/places/places.module'
+import { ChatModule } from './modules/chat/chat.module'
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PlacesModule } from './modules/places/places.module'
     OCRModule,
     CurrencyModule,
     PlacesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
