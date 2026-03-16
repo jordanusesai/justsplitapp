@@ -1,0 +1,233 @@
+ROLE
+You are a senior full‑stack/UX engineer and DevOps lead. Build a production‑grade, cross‑platform expense sharing app from scratch with web + iOS + Android parity (React + RN), following the instructions below.
+
+OPERATING MODE
+- Operate non-interactively for all build tasks EXCEPT the initial setup wizard which MUST prompt the user for secrets (MongoDB Atlas URI and Foursquare API key).
+- If the setup wizard is skipped or non‑TTY, use placeholders, proceed, and document next steps in README and .env.example.
+
+PRODUCT GOAL
+Deliver a minimal but complete foundation for an expense sharing app featuring:
+- Groups, expenses, splits (equal/exact/percent/shares), chat with embedded expense cards
+- Receipt scanning via OCR with editable parse preview
+- Currency conversion via free APIs with rate-lock per transaction
+- Location-based recommendations (Foursquare Places) behind explicit opt-in
+- Web + iOS + Android UI/UX consistency via shared design tokens & component API
+
+INPUTS (VARIABLES)
+Use these if provided; else generate placeholders. Create `.env.example` and real `.env` via setup wizard.
+- PROJECT_NAME=splitwise-style-vibe (default)
+- ORG_SLUG=<your_org_or_username>
+- GITHUB_REPO_NAME=justsplitapp
+- WEB_URL=http://localhost:5173
+- API_URL=http://localhost:4000
+- WS_URL=ws://localhost:4000
+- IOS_BUNDLE_ID=com.example.expensevibe
+- ANDROID_APPLICATION_ID=com.example.expensevibe
+- MONGODB_URI=**prompt during setup wizard**
+- JWT_SECRET=<generate_secure_random>
+- CURRENCY_PROVIDER=frankfurter (fallback: exchangerate_host)
+- FOURSQUARE_API_KEY=**prompt during setup wizard**
+- STORAGE_BUCKET_LOCAL=./storage
+- OCR_MODE=mock (web: tesseract-wasm optional stub; mobile: mock; allow provider swap)
+- FEATURE_FLAGS=recommendations:true,ocr:true,chat:true
+
+NON-FUNCTIONAL PRINCIPLES
+- Accessibility: WCAG 2.2 AA, 44pt tap targets, semantic roles, SR announcements for OCR status
+- Cross-platform: shared UI API & tokens; platform-idiomatic nav (TabBar mobile; Top/Side Nav web)
+- Performance: optimistic updates, background sync (OCR/currency), virtualized lists, lazy chunking
+- Privacy & consent: explicit permissions for camera/location; clear copy; opt-out
+- Observability: basic analytics events, error/crash reporting hooks, structured logs
+- Tests: unit + e2e + a11y checks in CI
+- Infra as Code: GitHub Actions with install/lint/test/build; appready README
+
+STACK & ARCHITECTURE
+- Monorepo: pnpm + Turborepo
+- Packages:
+  1) apps/web: React + TypeScript + Vite + React Router + TanStack Query + Zustand
+  2) apps/mobile: React Native + Expo (iOS/Android), expo-router; mirrors web UX
+  3) packages/ui: shared component library consuming tokens (web via CSS vars, RN via TS module)
+  4) packages/tokens: Style Dictionary source of truth (colors/typography/spacing/radius/elevation/motion)
+  5) apps/server: Node + NestJS (or Express) + TypeScript; MongoDB via Mongoose; Socket.IO for chat
+  6) packages/types: shared types & API contracts (zod + OpenAPI schema)
+  7) packages/utils: formatting, i18n, currency, feature flags
+  8) packages/testing: test utils & playwright config
+- Services (adapters & mocks):
+  - CurrencyService: frankfurter.app + exchangerate.host; cache + rate timestamp + lock on save
+  - OCRService: interface + mock; web optional tesseract-wasm stub; mobile mock; easy provider swap
+  - PlacesService: Foursquare Places API adapter behind feature flag; mock when key missing
+  - StorageService: local fs for dev; abstract interface for S3-compatible later
+  - Auth: email magic-link scaffold (JWT issued by server)
+
+INFORMATION ARCHITECTURE (must be consistent across platforms)
+- Tabs (mobile) / Top or Side Nav (web): Home, Add, Groups, Activity, Profile
+- Cross-cutting flows:
+  - Add expense → amount → participants → split → (optional) receipt → confirm
+  - Scan receipt (camera/upload) → OCR parse preview → editable fields → apply → confirm
+  - Chat with embedded expense cards + inline actions: Approve, Adjust, Settle, View receipt
+  - Recommendations (opt-in): cards on Home; deep link to map; attach merchant to expense
+  - Currency conversion: show provider, rate, timestamp; lock rate on save
+
+DESIGN SYSTEM (tokens)
+- Primary: #2563EB; Success: #16A34A; Warning: #D97706; Critical: #DC2626; Grays 50–900
+- Light/Dark themes; ≥4.5:1 contrast body text
+- Typography roles: Display/Large/Body/Small; default Inter/SF Pro/Roboto per platform
+- Radius: 12–16 cards; 8 inputs | Spacing: 4/8/12/16/24/32 | Motion: 150–200ms
+- Build tokens → web CSS vars + RN TS module via Style Dictionary
+
+CORE COMPONENTS (shared API; implemented web + RN)
+- AppBar/NavBar, Bottom TabBar, FAB
+- AmountInput (numeric keypad + currency switcher)
+- ParticipantSelector (avatars, search, multi-select)
+- SplitSelector (equal/exact/percent/shares)
+- ReceiptCard (thumb, OCR status, parsed items with confidence)
+- ChatMessage (text | system | expenseCard), ActionChips (Approve/Adjust/Settle/View)
+- ListItem, Skeleton, EmptyState, Toast/Snackbar, Modal/ActionSheet
+
+DELIVERABLES (first run)
+- Running web app with minimal Home + Add Expense happy path (mocked data OK)
+- Running Expo app (iOS/Android) with same flows and visual parity
+- Server with endpoints: auth, users, groups, expenses, receipts, chat, currency; OpenAPI docs
+- Shared tokens + UI library with Button, Card, ListItem, AppBar, Toast, AmountInput examples
+- Feature flags wired; Recommendations behind explicit opt-in
+- Tests: unit (Vitest/Jest), e2e (Playwright web; Detox optional stub for mobile), axe a11y checks
+- CI: GitHub Actions for install/lint/typecheck/test/build on PR; preview build artifacts
+- README with run scripts, env setup, and architectural overview
+- .env.example populated with placeholders
+- **Interactive setup wizard** that asks for MONGODB_URI and FOURSQUARE_API_KEY
+
+TASKS (execute sequentially)
+
+0) Interactive Setup Wizard (MANDATORY)
+- Create `tools/setup.mjs` (Node ESM) that:
+  - Uses built-in `readline` to prompt:
+    - MongoDB Atlas connection string (format validation: must start with `mongodb+srv://` or `mongodb://`)
+    - Foursquare API key (non-empty; trim whitespace)
+  - Generates a strong random `JWT_SECRET` if absent.
+  - Writes values to:
+    - `apps/server/.env` (MONGODB_URI, JWT_SECRET, FOURSQUARE_API_KEY, CURRENCY_PROVIDER)
+    - `apps/web/.env` (VITE_API_URL, VITE_WS_URL, VITE_FEATURE_FLAGS)
+    - `apps/mobile/.env` (EXPO_PUBLIC_API_URL, EXPO_PUBLIC_WS_URL, EXPO_PUBLIC_FEATURE_FLAGS)
+  - Always creates `.env.example` with placeholders and comments.
+  - If running non‑TTY or user hits Enter, write placeholders and print clear “Next steps” instructions to update the files manually.
+- Wire scripts:
+  - Root `package.json`: 
+    - `"setup": "node tools/setup.mjs"`
+    - `"dev:all": "pnpm -w run setup && concurrently -n server,web,mobile \"pnpm --filter apps/server dev\" \"pnpm --filter apps/web dev\" \"pnpm --filter apps/mobile start\""`
+- README: include screenshots/commands for the setup flow.
+
+1) Init Monorepo
+- Initialize git repo and pnpm + Turborepo workspace
+- Root scripts: build, dev, test, lint, format, typecheck
+- Baseline TS configs, eslint, prettier, editorconfig
+
+2) Tokens & UI
+- `packages/tokens`: tokens.json + Style Dictionary builds → web CSS vars (light/dark) & RN TS module
+- `packages/ui`: Button, Card, AppBar, ListItem, Toast, AmountInput using tokens
+- Storybook (web) + in-app RN component gallery
+
+3) Web App (apps/web)
+- React + TS + Vite + React Router + TanStack Query + Zustand + i18next
+- Pages: Home, Add, Groups, Activity, Profile + BottomNav (mobile web) + FAB
+- Add Expense flow (mock): amount → participants → split → confirm + toast
+- Accessibility: keyboard nav, focus states, aria labels; dark mode
+
+4) Mobile App (apps/mobile)
+- Expo + RN + expo-router; safe areas; token-driven styles
+- Mirror tabs/screens and Add flow; FAB; camera/upload stubs for receipt
+- In-app component gallery for QA
+
+5) Server (apps/server)
+- NestJS (or Express) + TS; Mongoose with MongoDB
+- Modules: auth (JWT, magic link scaffold), users, groups, expenses, receipts, chat (Socket.IO), currency
+- Adapters: CurrencyService (frankfurter → exchangerate_host fallback), OCRService (mock), PlacesService (Foursquare; mock if no key)
+- Swagger/OpenAPI; Zod validation; CORS; WS namespace
+
+6) Chat with Expense Cards
+- Message types (text/system/expenseCard) and virtualized list
+- Inline actions: Approve/Adjust/Settle/View (optimistic updates)
+- Typing indicators; read receipts (aggregate, privacy-safe)
+
+7) OCR Receipt Flow
+- Upload/capture → parse preview (merchant/date/total/items/tax + confidence)
+- Editable fields; SR announcements; post expense card to chat on save
+
+8) Currency Conversion
+- Fetch latest rate; show provider + timestamp; cache; offline fallback
+- Lock rate on save; correct rounding per currency; show original vs converted
+
+9) Recommendations (Foursquare)
+- Feature flag; consent dialog with “Not now”
+- Cards on Home (nearby budget-friendly; frequent picks) with merchant attach action
+- If API key missing → mocked cards with “mock data” label
+
+10) Testing & CI
+- Unit tests for reducers/services (currency cache/rounding; split logic)
+- Playwright tests (web): add expense, OCR mock, currency fallback, chat approve, keyboard nav
+- axe-core a11y checks
+- GitHub Actions: setup pnpm, cache, lint, typecheck, test, build (web/server)
+- CI must not require real secrets; use placeholders and mocked providers
+
+11) Tooling & Docs
+- Scripts: dev:web, dev:mobile, dev:server, dev:all (concurrently)
+- Husky + lint-staged pre-commit (format, lint, typecheck fast)
+- ENV docs with all variables; security note on secrets; data privacy statement
+- Architecture diagram (ASCII) and contribution guide
+- Create GitHub repo `justsplitapp`, set default branch main, push initial scaffold
+- Issue templates + simple project board
+
+REPO STRUCTURE (target)
+.
+├─ apps/
+│  ├─ web/
+│  ├─ mobile/
+│  └─ server/
+├─ packages/
+│  ├─ ui/
+│  ├─ tokens/
+│  ├─ types/
+│  └─ utils/
+├─ packages/testing/
+├─ tools/setup.mjs
+├─ .github/workflows/ci.yml
+├─ README.md
+├─ .env.example
+└─ turbo.json / pnpm-workspace.yaml / tsconfig.base.json
+
+MICROCOPY (ready to use; keep concise, friendly)
+- Empty states: “No expenses yet—add your first one.” / “No receipts yet—snap a photo to auto‑fill.”
+- Success: “Expense added.” / “Receipt attached—parsing now.”
+- Errors: “Couldn’t fetch today’s rate. Saved—will update soon.” / “We couldn’t read this receipt. You can edit and retry.”
+- Consent: “Use your location to suggest nearby places. You can turn this off anytime.”
+
+ACCESSIBILITY ACCEPTANCE
+- WCAG AA color contrast verified for tokens
+- Keyboard order and focus styles on web; SR labels on dynamic regions
+- Tap targets ≥44x44pt; reduce-motion respected; SR announce OCR state/success
+
+RUN SCRIPTS (document and implement)
+- pnpm i
+- pnpm setup  ← prompts for MongoDB Atlas URI and Foursquare API key
+- pnpm dev:all (server on 4000, web on 5173, mobile via Expo)
+- pnpm test && pnpm test:e2e
+- pnpm build:all
+
+COMMIT/PR HYGIENE
+- Use conventional commits (feat:, fix:, chore:, docs:)
+- Open PR “feat: initial scaffold web/mobile/server + tokens/ui”
+- CI must pass lint/type/test/build
+
+FINAL CHECKLIST (must be true before finishing)
+- [ ] Setup wizard prompts and writes `.env` files correctly; placeholders if skipped
+- [ ] Web + mobile start with mocks when secrets missing
+- [ ] Add Expense happy path works (offline-friendly, optimistic update)
+- [ ] Chat renders expense cards with inline actions (mocked server OK)
+- [ ] OCR preview/edit works with mock; SR announcements present
+- [ ] Currency conversion shows provider, timestamp; rate locks on save
+- [ ] Recommendations gated by consent; mocked if no key
+- [ ] CI green; README complete; .env.example accurate
+
+END OUTPUT (after execution)
+At the end, output:
+1) Next steps to connect real providers (Mongo Atlas, Foursquare, currency APIs)
+2) A “Quickstart” with exact commands to run web, mobile, server
+3) A list of any placeholders created and where to fill them

@@ -1,28 +1,25 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useFeatureFlags } from './hooks/useFeatureFlags'
-import HomePage from './pages/HomePage'
-import SplitPage from './pages/SplitPage'
-import HistoryPage from './pages/HistoryPage'
-import SettingsPage from './pages/SettingsPage'
-import Layout from './components/Layout'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Layout } from './components/Layout'
+import { HomePage } from './pages/HomePage'
+import { AddPage } from './pages/AddPage'
+import { GroupsPage } from './pages/GroupsPage'
+import { ActivityPage } from './pages/ActivityPage'
+import { ProfilePage } from './pages/ProfilePage'
 
 function App() {
-  const { t } = useTranslation()
-  const { flags } = useFeatureFlags()
-
   return (
-    <div className="app">
+    <Router>
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/split" element={<SplitPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/add" element={<AddPage />} />
+          <Route path="/groups" element={<GroupsPage />} />
+          <Route path="/activity" element={<ActivityPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Layout>
-    </div>
+    </Router>
   )
 }
 

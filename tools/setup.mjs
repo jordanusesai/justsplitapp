@@ -88,7 +88,7 @@ async function setup() {
     console.log('📝 Non-interactive mode detected. Using placeholder values.')
   }
 
-  const featureFlags = 'recommendations:true,ocr:true,chat:true,mockMode:true'
+  const featureFlags = 'recommendations:true,ocr:true,chat:true'
 
   // Write server .env
   const serverEnv = `# Database
@@ -103,6 +103,9 @@ FEATURE_FLAGS=${featureFlags}
 # API Keys
 FOURSQUARE_API_KEY=${foursquareKey}
 
+# Services
+CURRENCY_PROVIDER=frankfurter
+
 # Server
 PORT=4000
 NODE_ENV=development
@@ -115,6 +118,7 @@ VITE_FEATURE_FLAGS=${featureFlags}
 
 # API endpoints
 VITE_API_URL=http://localhost:4000
+VITE_WS_URL=ws://localhost:4000
 `
   writeEnvFile(path.join(rootDir, 'apps', 'web', '.env'), webEnv)
 
@@ -124,6 +128,7 @@ EXPO_PUBLIC_FEATURE_FLAGS=${featureFlags}
 
 # API endpoints
 EXPO_PUBLIC_API_URL=http://localhost:4000
+EXPO_PUBLIC_WS_URL=ws://localhost:4000
 `
   writeEnvFile(path.join(rootDir, 'apps', 'mobile', '.env'), mobileEnv)
 
@@ -135,10 +140,13 @@ MONGODB_URI=mongodb://localhost:27017/justsplitapp
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
 # Feature flags (comma-separated)
-FEATURE_FLAGS=recommendations:true,ocr:true,chat:true,mockMode:true
+FEATURE_FLAGS=recommendations:true,ocr:true,chat:true
 
 # API Keys
 FOURSQUARE_API_KEY=your-foursquare-api-key-here
+
+# Services
+CURRENCY_PROVIDER=frankfurter
 
 # Server
 PORT=4000

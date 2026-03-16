@@ -31,3 +31,11 @@ async function bootstrap() {
 }
 
 bootstrap()
+
+// src/main.ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  // Render uses the PORT env var; 10000 is their default
+  await app.listen(process.env.PORT || 10000, '0.0.0.0'); 
+}
+bootstrap();

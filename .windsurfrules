@@ -1,0 +1,80 @@
+# Global Rules for Production-Ready Monorepo Development
+
+## 1. Monorepo Architecture & Boundaries
+- **Clear Separation:** Understand the three main domains:
+  - `apps/web/` - Frontend (Vite + React + TypeScript)
+  - `apps/mobile/` - Mobile (Expo + React Native)
+  - `apps/server/` - Backend (NestJS + Node + MongoDB)
+- **Package Dependencies:** Shared packages in `packages/` are for cross-app utilities. Never import app-specific code into packages.
+- **API Boundaries:** Web/Mobile apps communicate with server ONLY via HTTP API and Socket.IO. No direct database access.
+- **Feature Flags:** All feature toggles go through the centralized `/api/flags` endpoint.
+
+## 2. Security First (Zero Trust)
+- **No Hardcoded Secrets:** Never put API keys, database URLs, or passwords in code. Use `.env` files with `.env.example`.
+- **Input Validation:** Every user input must be sanitized using Zod schemas before reaching the database.
+- **Authentication:** Assume all server routes are private unless explicitly marked public. Implement JWT validation.
+- **Dependency Security:** Before adding packages, evaluate size and security. Use `pnpm audit` regularly.
+
+## 3. App-Specific Rules
+
+### Frontend (apps/web) - Vite + React
+- **State Management:** Use TanStack Query for server state, Zustand for client state
+- **Build Optimization:** Code split by routes, lazy load components
+- **No Server Code:** Never import server-side modules or database clients
+- **Environment:** Use `VITE_*` prefixed env vars only
+
+### Mobile (apps/mobile) - Expo + React Native  
+- **Platform Specific:** Use Expo-safe libraries, avoid Node.js APIs
+- **Offline First:** Implement proper caching for network requests
+- **Environment:** Use `EXPO_PUBLIC_*` prefixed env vars only
+- **No Server Code:** Never import server modules or database clients
+
+### Backend (apps/server) - NestJS + MongoDB
+- **Database Access:** Only server can access MongoDB via Mongoose
+- **Validation:** Use class-validator with DTOs for all endpoints
+- **Error Handling:** Global exception filter with proper HTTP status codes
+- **Authentication:** JWT middleware on all private routes
+- **Environment:** Use standard env vars (no prefixes)
+
+## 4. Debugging & Observability
+- **Structured Logging:** Use NestJS logger (server) and appropriate logging libs in apps
+- **Error Boundaries:** React error boundaries in web, proper error handling in mobile
+- **Meaningful Errors:** User-friendly messages to clients, detailed logs to server
+- **Cross-App Debugging:** Use consistent request IDs for tracing across apps
+
+## 5. Code Integrity
+- **TypeScript Strict:** No `any` types. Define interfaces in `packages/types`
+- **Atomic Commits:** Small, logical changes. Explain the "why" not just "what"
+- **Defensive Programming:** Check for null/undefined, use Zod for runtime validation
+- **Shared Types:** All shared interfaces go in `packages/types`
+
+## 6. Render Deployment Rules
+- **Web App:** Deploy as static site from `apps/web/dist` to Render
+- **Server:** Deploy as Node.js service from `apps/server` with MongoDB addon
+- **Environment:** Production uses different feature flags than development
+- **Health Checks:** Server must have `/health` endpoint for Render
+- **Build Process:** Use `render.yaml` configuration for automated deployments
+
+## 7. Performance & Accessibility
+- **Web:** Optimize bundle size, implement lazy loading, ensure WCAG 2.2 AA compliance
+- **Mobile:** 44pt minimum touch targets, proper contrast ratios, screen reader support
+- **Server:** Implement caching, database indexes, proper error handling
+- **Shared:** Use design tokens from `packages/tokens` for consistency
+
+## 8. Interaction Protocol
+- **Major Refactors:** Explain plan and wait for "Green Light" before execution
+- **Cross-App Changes:** When touching multiple apps, explain the full impact
+- **Security Sanity:** After each feature, run security check for new vulnerabilities
+- **Deployment:** Any deployment-related changes must be tested against `render.yaml`
+
+## 9. Data Privacy & Security
+- **User Isolation:** Every database query must filter by authenticated user_id
+- **API Security:** Rate limiting, input validation, proper HTTP status codes
+- **Socket.IO:** Authenticate socket connections, validate all message data
+- **Environment Separation:** Never use production secrets in development
+
+## 10. UI/UX Consistency
+- **Design System:** Use `packages/ui` components and `packages/tokens` design tokens
+- **Cross-Platform:** Ensure consistent styling between web and mobile where appropriate
+- **Internationalization:** All user-facing text must go through i18n system
+- **Component Sharing:** Share UI components between apps via `packages/ui`

@@ -1,44 +1,116 @@
 services:
-  # Web Service
+  # Development Services
   - type: web
-    name: justsplitapp-web
-    env: static
-    rootDir: apps/web/dist
-    buildCommand: pnpm --filter @justsplitapp/web build
-    staticPublishPath: .
-    routes:
-      - type: rewrite
-        source: /api/*
-        destination: https://justsplitapp-server.onrender.com
+    name: justsplitapp-server-dev
+    env: node
+    branch: dev
+    rootDir: apps/server
+    buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/server build
+    startCommand: pnpm --filter apps/server start
+    autoDeploy: true
+    healthCheck:
+      path: /health
+      port: 4000
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: PORT
+        value: 4000
+      - key: FEATURE_FLAGS
+        fromGroup: justsplitapp-dev
+      - key: MONGODB_URI
+        fromGroup: justsplitapp-dev
+      - key: JWT_SECRET
+        fromGroup: justsplitapp-dev
+      - key: FOURSQUARE_API_KEY
+        fromGroup: justsplitapp-dev
+      - key: CURRENCY_PROVIDER
+        value: frankfurter
+      - key: CORS_ORIGIN
+        value: "*"
+
+  - type: static_site
+    name: justsplitapp-web-dev
+    branch: dev
+    rootDir: apps/web
+    buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/web build
+    publishPath: apps/web/dist
+    autoDeploy: true
     envVars:
       - key: VITE_API_URL
-        value: https://justsplitapp-server.onrender.com
+        value: http://justsplitapp-server-dev.onrender.com:4000
+      - key: VITE_WS_URL
+        value: ws://justsplitapp-server-dev.onrender.com:4000
       - key: VITE_FEATURE_FLAGS
-        value: recommendations:false,ocr:true,chat:true,mockMode:false
+        fromGroup: justsplitapp-dev
 
-  # Server Service
+  # Production Services
   - type: web
-    name: justsplitapp-server
+    name: justsplitapp-server-prod
     env: node
+    branch: main
     rootDir: apps/server
-    buildCommand: pnpm --filter @justsplitapp/server build
-    startCommand: pnpm --filter @justsplitapp/server start:prod
-    healthCheckPath: /health
+    buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/server build
+    startCommand: pnpm --filter apps/server start
+    autoDeploy: true
+    healthCheck:
+      path: /health
+      port: 4000
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
+        value: 4000
+      - key: FEATURE_FLAGS
+        fromGroup: justsplitapp-prod
       - key: MONGODB_URI
-        fromDatabase:
-          name: justsplitapp-db
-          property: connectionString
+        fromGroup: justsplitapp-prod
+      - key: JWT_SECRET
+        fromGroup: justsplitapp-prod
+      - key: FOURSQUARE_API_KEY
+        fromGroup: justsplitapp-prod
+      - key: CURRENCY_PROVIDER
+        value: frankfurter
+      - key: CORS_ORIGIN
+        value: https://justsplitapp-web-prod.onrender.com
+
+  - type: static_site
+    name: justsplitapp-web-prod
+    branch: main
+    rootDir: apps/web
+    buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/web build
+    publishPath: apps/web/dist
+    autoDeploy: true
+    envVars:
+      - key: VITE_API_URL
+        value: https://justsplitapp-server-prod.onrender.com:4000
+      - key: VITE_WS_URL
+        value: wss://justsplitapp-server-prod.onrender.com:4000
+      - key: VITE_FEATURE_FLAGS
+        fromGroup: justsplitapp-prod
+
+envVarGroups:
+  - name: justsplitapp-dev
+    envVars:
+      - key: FEATURE_FLAGS
+        value: recommendations:true,ocr:true,chat:true
+      - key: MONGODB_URI
+        value: REPLACE_WITH_DEV_MONGODB_ATLAS_URI
       - key: JWT_SECRET
         generateValue: true
-      - key: FEATURE_FLAGS
-        value: recommendations:false,ocr:true,chat:true,mockMode:false
       - key: FOURSQUARE_API_KEY
-        sync: false
+        value: REPLACE_WITH_DEV_FSQ_KEY
+
+  - name: justsplitapp-prod
+    envVars:
+      - key: FEATURE_FLAGS
+        value: recommendations:false,ocr:true,chat:true
+      - key: MONGODB_URI
+        value: REPLACE_WITH_PROD_MONGODB_ATLAS_URI
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FOURSQUARE_API_KEY
+        value: REPLACE_WITH_PROD_FSQ_KEY
 
 databases:
   - name: justsplitapp-db
