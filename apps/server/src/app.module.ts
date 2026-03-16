@@ -8,6 +8,7 @@ import { SplitsModule } from './modules/splits/splits.module'
 import { UsersModule } from './modules/users/users.module'
 import { WebSocketsModule } from './modules/websockets/websockets.module'
 import { OCRModule } from './modules/ocr/ocr.module'
+import { CurrencyModule } from './modules/currency/currency.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OCRModule } from './modules/ocr/ocr.module'
     UsersModule,
     WebSocketsModule,
     OCRModule,
+    CurrencyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
