@@ -9,6 +9,7 @@ import { UsersModule } from './modules/users/users.module'
 import { WebSocketsModule } from './modules/websockets/websockets.module'
 import { OCRModule } from './modules/ocr/ocr.module'
 import { CurrencyModule } from './modules/currency/currency.module'
+import { PlacesModule } from './modules/places/places.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CurrencyModule } from './modules/currency/currency.module'
     WebSocketsModule,
     OCRModule,
     CurrencyModule,
+    PlacesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
