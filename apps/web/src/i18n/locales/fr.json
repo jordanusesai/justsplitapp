@@ -1,50 +1,76 @@
 {
-  "common": {
-    "split": "Diviser",
-    "history": "Historique",
-    "settings": "Paramètres",
+  "nav": {
     "home": "Accueil",
     "add": "Ajouter",
-    "save": "Enregistrer",
-    "cancel": "Annuler",
-    "delete": "Supprimer",
-    "edit": "Modifier",
-    "loading": "Chargement...",
-    "error": "Erreur",
-    "success": "Succès"
+    "groups": "Groupes",
+    "activity": "Activité",
+    "profile": "Profil"
   },
   "home": {
-    "title": "JustSplit",
-    "subtitle": "Divisez les factures et dépenses avec des amis",
-    "newSplit": "Nouvelle Division",
-    "recentSplits": "Divisions Récentes",
-    "noSplits": "Aucune division encore. Créez votre première!"
+    "totalBalance": "Solde Total",
+    "youOwe": "Vous devez",
+    "youAreOwed": "On vous doit",
+    "addExpense": "Ajouter une dépense",
+    "settleUp": "Régler",
+    "recommendationsTitle": "Lieux proches pour diviser",
+    "turnOffLocation": "Désactiver la localisation",
+    "locationConsentTitle": "Découvrir des lieux proches",
+    "locationConsentText": "Utilisez votre position pour suggérer des restaurants et des magasins à proximité pour vos dépenses. Vous pouvez désactiver cela à tout moment.",
+    "notNow": "Pas maintenant",
+    "enableLocation": "Activer",
+    "locationDisabled": "Les services de localisation sont désactivés.",
+    "recentActivity": "Activité Récente",
+    "noExpenses": "Pas encore de dépenses—ajoutez votre première."
   },
-  "split": {
-    "title": "Diviser la Facture",
+  "addExpense": {
+    "title": "Ajouter une dépense",
+    "description": "Divisez les dépenses avec vos amis facilement",
     "amount": "Montant",
-    "description": "Description",
+    "amountLabel": "Montant en {{currency}}",
+    "amountGroup": "Montant de la dépense",
+    "switchCurrency": "Changer la devise de {{currency}}",
     "participants": "Participants",
-    "addParticipant": "Ajouter un Participant",
-    "splitEqually": "Diviser Également",
-    "splitByAmount": "Diviser par Montant",
-    "total": "Total",
-    "perPerson": "Par Personne",
-    "settleUp": "Régler"
+    "searchParticipants": "Rechercher des participants...",
+    "descriptionLabel": "Description (facultatif)",
+    "descriptionPlaceholder": "C'était pour quoi ?",
+    "create": "Créer la dépense",
+    "or": "ou",
+    "scanReceipt": "Numériser le reçu"
   },
-  "history": {
-    "title": "Historique",
-    "noHistory": "Pas d'historique encore",
-    "date": "Date",
-    "amount": "Montant",
-    "participants": "Participants"
+  "groups": {
+    "title": "Groupes",
+    "description": "Gérez vos groupes de dépenses",
+    "viewGroup": "Voir le groupe",
+    "createGroup": "Créer un nouveau groupe"
   },
-  "settings": {
-    "title": "Paramètres",
-    "language": "Langue",
-    "currency": "Devise",
-    "theme": "Thème",
-    "darkMode": "Mode Sombre",
-    "lightMode": "Mode Clair"
+  "activity": {
+    "title": "Activité",
+    "description": "Dépenses et paiements récents"
+  },
+  "profile": {
+    "title": "Profil",
+    "description": "Gérez vos paramètres de compte",
+    "name": "Nom",
+    "email": "Email",
+    "currency": "Devise par défaut",
+    "saveChanges": "Enregistrer les modifications",
+    "changePassword": "Changer le mot de passe",
+    "preferences": "Préférences",
+    "notifications": "Notifications Push",
+    "locationServices": "Services de localisation",
+    "darkMode": "Mode Sombre"
+  },
+  "chat": {
+    "empty": "Pas encore de messages. Commencez la conversation !",
+    "placeholder": "Tapez un message...",
+    "send": "Envoyer"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier"
   }
 }

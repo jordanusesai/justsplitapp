@@ -7,6 +7,8 @@ import { GroupsPage } from './pages/GroupsPage'
 import { ActivityPage } from './pages/ActivityPage'
 import { ProfilePage } from './pages/ProfilePage'
 
+import { ChatPage } from './pages/ChatPage'
+
 function App() {
   return (
     <Router>
@@ -16,6 +18,7 @@ function App() {
           <Route path="/add" element={<AddPage />} />
           <Route path="/groups" element={<GroupsPage />} />
           <Route path="/activity" element={<ActivityPage />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Layout>

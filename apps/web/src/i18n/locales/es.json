@@ -1,50 +1,75 @@
 {
-  "common": {
-    "split": "Dividir",
-    "history": "Historial",
-    "settings": "Configuración",
+  "nav": {
     "home": "Inicio",
     "add": "Agregar",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "loading": "Cargando...",
-    "error": "Error",
-    "success": "Éxito"
+    "groups": "Grupos",
+    "activity": "Actividad",
+    "profile": "Perfil"
   },
   "home": {
-    "title": "JustSplit",
-    "subtitle": "Divide cuentas y gastos con amigos",
-    "newSplit": "Nueva División",
-    "recentSplits": "Divisiones Recientes",
-    "noSplits": "No hay divisiones aún. ¡Crea tu primera!"
+    "totalBalance": "Balance Total",
+    "youOwe": "Debes",
+    "youAreOwed": "Te deben",
+    "addExpense": "Agregar Gasto",
+    "settleUp": "Liquidar",
+    "recommendationsTitle": "Lugares cercanos para dividir",
+    "turnOffLocation": "Desactivar ubicación",
+    "locationConsentTitle": "Descubrir lugares cercanos",
+    "locationConsentText": "Usa tu ubicación para sugerir restaurantes y tiendas cercanas para tus gastos. Puedes desactivar esto en cualquier momento.",
+    "notNow": "Ahora no",
+    "enableLocation": "Activar",
+    "locationDisabled": "Servicios de ubicación desactivados.",
+    "recentActivity": "Actividad Reciente",
+    "noExpenses": "No hay gastos aún—agrega el primero."
   },
-  "split": {
-    "title": "Dividir Cuenta",
+  "addExpense": {
+    "title": "Agregar Gasto",
+    "description": "Divide gastos con amigos fácilmente",
     "amount": "Cantidad",
-    "description": "Descripción",
+    "amountLabel": "Cantidad en {{currency}}",
+    "amountGroup": "Cantidad del gasto",
+    "switchCurrency": "Cambiar moneda de {{currency}}",
     "participants": "Participantes",
-    "addParticipant": "Agregar Participante",
-    "splitEqually": "Dividir Igualmente",
-    "splitByAmount": "Dividir por Cantidad",
-    "total": "Total",
-    "perPerson": "Por Persona",
-    "settleUp": "Liquidar"
+    "searchParticipants": "Buscar participantes...",
+    "descriptionLabel": "Descripción (opcional)",
+    "descriptionPlaceholder": "¿Para qué fue este gasto?",
+    "create": "Crear Gasto",
+    "or": "o",
+    "scanReceipt": "Escanear Recibo"
   },
-  "history": {
-    "title": "Historial",
-    "noHistory": "No hay historial aún",
-    "date": "Fecha",
-    "amount": "Cantidad",
-    "participants": "Participantes"
+  "groups": {
+    "title": "Grupos",
+    "description": "Gestiona tus grupos de gastos",
+    "viewGroup": "Ver Grupo",
+    "createGroup": "Crear Nuevo Grupo"
   },
-  "settings": {
-    "title": "Configuración",
-    "language": "Idioma",
-    "currency": "Moneda",
-    "theme": "Tema",
-    "darkMode": "Modo Oscuro",
-    "lightMode": "Modo Claro"
+  "activity": {
+    "title": "Actividad",
+    "description": "Gastos y pagos recientes"
+  },
+  "profile": {
+    "title": "Perfil",
+    "description": "Gestiona tu configuración de cuenta",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "currency": "Moneda predeterminada",
+    "saveChanges": "Guardar Cambios",
+    "changePassword": "Cambiar Contraseña",
+    "preferences": "Preferencias",
+    "notifications": "Notificaciones Push",
+    "locationServices": "Servicios de Ubicación",
+    "darkMode": "Modo Oscuro"
+  },
+  "chat": {
+    "empty": "No hay mensajes aún. ¡Empieza la conversación!",
+    "placeholder": "Escribe un mensaje...",
+    "send": "Enviar"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar"
   }
 }

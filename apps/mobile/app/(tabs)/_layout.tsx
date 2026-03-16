@@ -1,53 +1,62 @@
-import { Tabs } from 'expo-router'
-import { useTranslation } from 'react-i18next'
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#999',
-        headerShown: false,
-      }}
-    >
+        tabBarActiveTintColor: '#2563EB',
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 10,
+          paddingTop: 5,
+        },
+        headerStyle: {
+          backgroundColor: '#fff',
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: t('common.home'),
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color }}>🏠</Text>
-          ),
+          title: t('nav.home', 'Home'),
+          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="split"
+        name="add"
         options={{
-          title: t('common.split'),
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color }}>💰</Text>
-          ),
+          title: t('nav.add', 'Add'),
+          tabBarIcon: ({ color }) => <Ionicons name="add-circle" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="groups"
+        options={{
+          title: t('nav.groups', 'Groups'),
+          tabBarIcon: ({ color }) => <Ionicons name="people" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: t('common.history'),
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color }}>📋</Text>
-          ),
+          title: t('nav.activity', 'Activity'),
+          tabBarIcon: ({ color }) => <Ionicons name="list" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="profile"
         options={{
-          title: t('common.settings'),
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color }}>⚙️</Text>
-          ),
+          title: t('nav.profile', 'Profile'),
+          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
         }}
       />
     </Tabs>
-  )
+  );
 }

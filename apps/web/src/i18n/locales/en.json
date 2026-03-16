@@ -1,50 +1,75 @@
 {
-  "common": {
-    "split": "Split",
-    "history": "History",
-    "settings": "Settings",
+  "nav": {
     "home": "Home",
     "add": "Add",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success"
+    "groups": "Groups",
+    "activity": "Activity",
+    "profile": "Profile"
   },
   "home": {
-    "title": "JustSplit",
-    "subtitle": "Split bills and expenses with friends",
-    "newSplit": "New Split",
-    "recentSplits": "Recent Splits",
-    "noSplits": "No splits yet. Create your first one!"
+    "totalBalance": "Total Balance",
+    "youOwe": "You Owe",
+    "youAreOwed": "You are Owed",
+    "addExpense": "Add Expense",
+    "settleUp": "Settle Up",
+    "recommendationsTitle": "Nearby Places to Split",
+    "turnOffLocation": "Turn off location",
+    "locationConsentTitle": "Discover Nearby Places",
+    "locationConsentText": "Use your location to suggest nearby restaurants and shops for your expenses. You can turn this off anytime.",
+    "notNow": "Not now",
+    "enableLocation": "Enable",
+    "locationDisabled": "Location services are disabled.",
+    "recentActivity": "Recent Activity",
+    "noExpenses": "No expenses yet—add your first one."
   },
-  "split": {
-    "title": "Split Bill",
+  "addExpense": {
+    "title": "Add Expense",
+    "description": "Split expenses with friends easily",
     "amount": "Amount",
-    "description": "Description",
+    "amountLabel": "Amount in {{currency}}",
+    "amountGroup": "Expense amount",
+    "switchCurrency": "Switch currency from {{currency}}",
     "participants": "Participants",
-    "addParticipant": "Add Participant",
-    "splitEqually": "Split Equally",
-    "splitByAmount": "Split by Amount",
-    "total": "Total",
-    "perPerson": "Per Person",
-    "settleUp": "Settle Up"
+    "searchParticipants": "Search participants...",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "What was this expense for?",
+    "create": "Create Expense",
+    "or": "or",
+    "scanReceipt": "Scan Receipt"
   },
-  "history": {
-    "title": "History",
-    "noHistory": "No history yet",
-    "date": "Date",
-    "amount": "Amount",
-    "participants": "Participants"
+  "groups": {
+    "title": "Groups",
+    "description": "Manage your expense groups",
+    "viewGroup": "View Group",
+    "createGroup": "Create New Group"
   },
-  "settings": {
-    "title": "Settings",
-    "language": "Language",
-    "currency": "Currency",
-    "theme": "Theme",
-    "darkMode": "Dark Mode",
-    "lightMode": "Light Mode"
+  "activity": {
+    "title": "Activity",
+    "description": "Recent expenses and payments"
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Manage your account settings",
+    "name": "Name",
+    "email": "Email",
+    "currency": "Default Currency",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "preferences": "Preferences",
+    "notifications": "Push Notifications",
+    "locationServices": "Location Services",
+    "darkMode": "Dark Mode"
+  },
+  "chat": {
+    "empty": "No messages yet. Start the conversation!",
+    "placeholder": "Type a message...",
+    "send": "Send"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }
