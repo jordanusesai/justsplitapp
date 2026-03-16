@@ -4,9 +4,8 @@ services:
     name: api-justsplitapp-dev
     env: node
     branch: dev
-    rootDir: apps/server
-    buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/server build
-    startCommand: pnpm --filter apps/server start
+    buildCommand: pnpm i --frozen-lockfile && pnpm --filter @justsplitapp/server build
+    startCommand: pnpm --filter @justsplitapp/server start:prod
     autoDeploy: true
     healthCheck:
       path: /health
@@ -32,15 +31,14 @@ services:
   - type: static_site
     name: justsplitapp-dev
     branch: dev
-    rootDir: apps/web
     buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/web build
     publishPath: apps/web/dist
     autoDeploy: true
     envVars:
       - key: VITE_API_URL
-        value: http://api.justsplitapp-dev.onrender.com:4000
+        value: http://api-justsplitapp-dev.onrender.com:4000
       - key: VITE_WS_URL
-        value: ws://api.justsplitapp-dev.onrender.com:4000
+        value: ws://api-justsplitapp-dev.onrender.com:4000
       - key: VITE_FEATURE_FLAGS
         fromGroup: justsplitapp-dev
 
@@ -49,9 +47,8 @@ services:
     name: api-justsplitapp-prod
     env: node
     branch: main
-    rootDir: apps/server
-    buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/server build
-    startCommand: pnpm --filter apps/server start
+    buildCommand: pnpm i --frozen-lockfile && pnpm --filter @justsplitapp/server build
+    startCommand: pnpm --filter @justsplitapp/server start:prod
     autoDeploy: true
     healthCheck:
       path: /health
@@ -77,7 +74,6 @@ services:
   - type: static_site
     name: justsplitapp-prod
     branch: main
-    rootDir: apps/web
     buildCommand: pnpm i --frozen-lockfile && pnpm --filter apps/web build
     publishPath: apps/web/dist
     autoDeploy: true
