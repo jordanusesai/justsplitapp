@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Linking } from 'react-native';
 import { Card } from './Card.native';
 import { Button } from './Button.native';
 import { colors } from '@justsplitapp/tokens';
@@ -23,19 +23,40 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   onAttach,
   style,
 }) => {
+  const handleViewOnMap = () => {
+    const encodedAddress = encodeURIComponent(address);
+    const url = Platform.select({
+      ios: `maps:0,0?q=${encodedAddress}`,
+      android: `geo:0,0?q=${encodedAddress}`,
+    });
+
+    if (url) {
+      Linking.canOpenURL(url).then((supported) => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          // Fallback to google maps in browser
+          Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`);
+        }
+      });
+    }
+  };
+
   return (
     <Card style={[styles.container, style]}>
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
           {isMock && (
-            <View style={styles.mockBadge}>
-              <Text style={styles.mockText}>MOCK DATA</Text>
+            <View style={styles.mockBadgeSmall}>
+              <Text style={styles.mockTextSmall}>MOCK DATA</Text>
             </View>
           )}
         </View>
         <Text style={styles.category}>{category}</Text>
-        <Text style={styles.address} numberOfLines={2}>{address}</Text>
+        <TouchableOpacity onPress={handleViewOnMap}>
+          <Text style={styles.address} numberOfLines={2}>{address}</Text>
+        </TouchableOpacity>
         {distance && (
           <Text style={styles.distance}>
             {typeof distance === 'number' 
@@ -45,14 +66,24 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
         )}
       </View>
       <View style={styles.footer}>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onPress={onAttach} 
-          style={styles.button}
-        >
-          Attach to Expense
-        </Button>
+        <View style={styles.buttonRow}>
+          <Button 
+            variant="primary" 
+            size="sm" 
+            onPress={onAttach} 
+            style={styles.flexButton}
+          >
+            Attach
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onPress={handleViewOnMap} 
+            style={styles.flexButton}
+          >
+            Map
+          </Button>
+        </View>
       </View>
     </Card>
   );
@@ -79,18 +110,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
-  mockBadge: {
-    backgroundColor: '#F3F4F6',
+  mockBadgeSmall: {
+    backgroundColor: '#DBEAFE',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#BFDBFE',
   },
-  mockText: {
+  mockTextSmall: {
     fontSize: 8,
     fontWeight: 'bold',
-    color: '#6B7280',
+    color: '#2563EB',
   },
   category: {
     fontSize: 12,
@@ -102,6 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     marginBottom: 4,
+    textDecorationLine: 'underline',
   },
   distance: {
     fontSize: 12,
@@ -113,7 +145,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F3F4F6',
   },
-  button: {
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  flexButton: {
+    flex: 1,
     minHeight: 36,
+  },
+  clearText: {
+    fontSize: 12,
+    color: '#2563EB',
+    fontWeight: '600',
   },
 });

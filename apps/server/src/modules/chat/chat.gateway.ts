@@ -20,7 +20,7 @@ import { ChatService } from './chat.service';
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   private readonly logger = new Logger(ChatGateway.name);
 
@@ -40,7 +40,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() payload: ChatMessage,
   ) {
     const savedMessage = await this.chatService.saveMessage(payload);
-    this.server.emit('message', savedMessage);
+    // Broadcast to the specific room if roomId is provided, else broadcast to all (default namespace)
+    if (payload.roomId) {
+      this.server.to(payload.roomId).emit('message', savedMessage);
+    } else {
+      this.server.emit('message', savedMessage);
+    }
     return savedMessage;
   }
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { colors } from '@justsplitapp/tokens';
 
 export type SplitType = 'equal' | 'exact' | 'percentage' | 'shares';
@@ -26,7 +25,6 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
   onChange,
   style,
 }) => {
-  const { t } = useTranslation();
   const [splitType, setSplitType] = useState<SplitType>('equal');
   const [values, setValues] = useState<Record<string, number>>({});
 
@@ -84,7 +82,7 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
             style={[styles.tab, splitType === type && styles.activeTab]}
           >
             <Text style={[styles.tabText, splitType === type && styles.activeTabText]}>
-              {t(`split.type.${type}`, type.charAt(0).toUpperCase() + type.slice(1))}
+              {type.charAt(0).toUpperCase() + type.slice(1)}
             </Text>
           </TouchableOpacity>
         ))}

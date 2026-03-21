@@ -3,16 +3,15 @@ import { clsx } from 'clsx'
 import { Button } from './Button'
 import { Card } from './Card'
 
+import { ActionChips, ActionChipProps } from './ActionChips'
+
 export interface ExpenseCardProps {
   title: string
   amount: number
   currency: string
   date: string
   participants: Array<{ name: string; avatar?: string }>
-  onApprove?: () => void
-  onAdjust?: () => void
-  onSettle?: () => void
-  onViewReceipt?: () => void
+  actions?: ActionChipProps[]
   className?: string
 }
 
@@ -22,10 +21,7 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
   currency,
   date,
   participants,
-  onApprove,
-  onAdjust,
-  onSettle,
-  onViewReceipt,
+  actions = [],
   className,
 }) => {
   const formattedAmount = new Intl.NumberFormat('en-US', {
@@ -59,28 +55,11 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 pt-2">
-        {onApprove && (
-          <Button variant="primary" size="sm" onClick={onApprove} className="w-full min-h-[44px]">
-            Approve
-          </Button>
-        )}
-        {onAdjust && (
-          <Button variant="outline" size="sm" onClick={onAdjust} className="w-full min-h-[44px]">
-            Adjust
-          </Button>
-        )}
-        {onSettle && (
-          <Button variant="secondary" size="sm" onClick={onSettle} className="w-full min-h-[44px]">
-            Settle
-          </Button>
-        )}
-        {onViewReceipt && (
-          <Button variant="outline" size="sm" onClick={onViewReceipt} className="w-full min-h-[44px]">
-            View Receipt
-          </Button>
-        )}
-      </div>
+      {actions.length > 0 && (
+        <div className="pt-2 border-t border-gray-50">
+          <ActionChips actions={actions} />
+        </div>
+      )}
     </Card>
   )
 }

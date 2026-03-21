@@ -15,6 +15,8 @@
     "strictBindCallApply": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": false,
+    "moduleResolution": "node",
+    "types": ["node", "multer"],
     "paths": {
       "@/*": ["./src/*"]
     }

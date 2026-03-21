@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { colors } from '@justsplitapp/tokens';
 
 export interface AmountInputProps {
@@ -20,7 +19,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   disabled = false,
   style,
 }) => {
-  const { t } = useTranslation();
   const [isFocused, setIsFocused] = useState(false);
 
   const handleValueChange = (text: string) => {
@@ -48,7 +46,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         style
       ]}
       accessibilityRole="none"
-      accessibilityLabel={t('addExpense.amountGroup', 'Expense amount')}
+      accessibilityLabel="Expense amount"
     >
       <TextInput
         style={styles.input}
@@ -60,13 +58,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         placeholderTextColor="#9CA3AF"
         keyboardType="decimal-pad"
         editable={!disabled}
-        accessibilityLabel={t('addExpense.amountLabel', `Amount in ${currency}`)}
+        accessibilityLabel={`Amount in ${currency}`}
       />
       <TouchableOpacity 
         style={styles.currencyButton}
         disabled={disabled}
         accessibilityRole="button"
-        accessibilityLabel={t('addExpense.switchCurrency', `Switch currency from ${currency}`)}
+        accessibilityLabel={`Switch currency from ${currency}`}
       >
         <Text style={styles.currencyText}>{currency}</Text>
       </TouchableOpacity>

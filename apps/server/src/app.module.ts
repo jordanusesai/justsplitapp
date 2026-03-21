@@ -13,6 +13,7 @@ import { PlacesModule } from './modules/places/places.module'
 import { ChatModule } from './modules/chat/chat.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { StorageModule } from './modules/storage/storage.module'
+import { GroupsModule } from './modules/groups/groups.module'
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StorageModule } from './modules/storage/storage.module'
     ChatModule,
     AuthModule,
     StorageModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

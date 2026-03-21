@@ -97,14 +97,22 @@ export function HomePage() {
         )}
 
         {locationConsent === true && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {recommendations.map((place, idx) => (
-              <RecommendationCard 
-                key={idx}
-                {...place}
-                onAttach={() => console.log('Attaching place:', place.name)}
-              />
-            ))}
+          <div className="space-y-4">
+            {recommendations.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {recommendations.map((place, idx) => (
+                  <RecommendationCard 
+                    key={idx}
+                    {...place}
+                    onAttach={() => console.log('Attaching place:', place.name)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Card className="p-8 text-center text-gray-500 border-dashed border-2">
+                <p>{t('home.noReceipts', 'No receipts yet—snap a photo to auto‑fill.')}</p>
+              </Card>
+            )}
           </div>
         )}
 

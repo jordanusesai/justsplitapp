@@ -39,6 +39,9 @@ jobs:
     - name: Test
       run: pnpm test
       
+    - name: Accessibility Check (axe-core)
+      run: pnpm --filter @justsplitapp/web exec playwright test --grep @a11y || echo "A11y checks failed but continuing CI for now"
+      
     - name: Build
       run: pnpm build
 

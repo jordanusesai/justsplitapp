@@ -9,7 +9,6 @@ import {
   Platform,
   ScrollView
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -45,7 +44,7 @@ export const Modal: React.FC<ModalProps> = ({
                 accessibilityLabel="Close modal"
                 accessibilityRole="button"
               >
-                <Ionicons name="close" size={24} color="#9CA3AF" />
+                <Text style={styles.closeButtonText}>×</Text>
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.body} bounces={false}>
@@ -101,6 +100,11 @@ const styles = StyleSheet.create({
     minWidth: 44,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: '#9CA3AF',
+    fontWeight: 'bold',
   },
   body: {
     padding: 20,

@@ -80,18 +80,24 @@ export default function HomeScreen() {
 
           {locationConsent === true && (
             <View style={styles.placesList}>
-              {mockPlaces.map((place, idx) => (
-                <View key={idx} style={styles.placeCard}>
-                  <View style={styles.placeInfo}>
-                    <Text style={styles.placeName}>{place.name}</Text>
-                    <Text style={styles.placeCategory}>{place.category}</Text>
-                    <Text style={styles.placeAddress}>{place.address} • {place.distance}</Text>
+              {mockPlaces.length > 0 ? (
+                mockPlaces.map((place, idx) => (
+                  <View key={idx} style={styles.placeCard}>
+                    <View style={styles.placeInfo}>
+                      <Text style={styles.placeName}>{place.name}</Text>
+                      <Text style={styles.placeCategory}>{place.category}</Text>
+                      <Text style={styles.placeAddress}>{place.address} • {place.distance}</Text>
+                    </View>
+                    <TouchableOpacity style={styles.attachButton}>
+                      <Text style={styles.attachButtonText}>Attach</Text>
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity style={styles.attachButton}>
-                    <Text style={styles.attachButtonText}>Attach</Text>
-                  </TouchableOpacity>
+                ))
+              ) : (
+                <View style={styles.emptyReceipts}>
+                  <Text style={styles.emptyReceiptsText}>{t('home.noReceipts', 'No receipts yet—snap a photo to auto‑fill.')}</Text>
                 </View>
-              ))}
+              )}
             </View>
           )}
         </View>
@@ -304,5 +310,20 @@ const styles = StyleSheet.create({
   emptyStateText: {
     color: '#6B7280',
     textAlign: 'center',
+  },
+  emptyReceipts: {
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
+    borderRadius: 12,
+    backgroundColor: '#F9FAFB',
+  },
+  emptyReceiptsText: {
+    color: '#9CA3AF',
+    textAlign: 'center',
+    fontSize: 12,
   }
 });

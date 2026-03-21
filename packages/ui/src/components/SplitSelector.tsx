@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { clsx } from 'clsx';
-import { useTranslation } from 'react-i18next';
 
 export type SplitType = 'equal' | 'exact' | 'percentage' | 'shares';
 
@@ -25,7 +24,6 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
   onChange,
   className,
 }) => {
-  const { t } = useTranslation();
   const [splitType, setSplitType] = useState<SplitType>('equal');
   const [splits, setSplits] = useState<Record<string, number>>({}); // stores value based on splitType
 
@@ -87,7 +85,7 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
                 : 'text-gray-500 hover:text-gray-700'
             )}
           >
-            {t(`split.type.${type}`, type.charAt(0).toUpperCase() + type.slice(1))}
+            {type.charAt(0).toUpperCase() + type.slice(1)}
           </button>
         ))}
       </div>

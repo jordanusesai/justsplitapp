@@ -15,12 +15,13 @@
     "recommendationsTitle": "Nearby Places to Split",
     "turnOffLocation": "Turn off location",
     "locationConsentTitle": "Discover Nearby Places",
-    "locationConsentText": "Use your location to suggest nearby restaurants and shops for your expenses. You can turn this off anytime.",
+    "locationConsentText": "Use your location to suggest nearby places. You can turn this off anytime.",
     "notNow": "Not now",
     "enableLocation": "Enable",
     "locationDisabled": "Location services are disabled.",
     "recentActivity": "Recent Activity",
-    "noExpenses": "No expenses yet—add your first one."
+    "noExpenses": "No expenses yet—add your first one.",
+    "noReceipts": "No receipts yet—snap a photo to auto‑fill."
   },
   "addExpense": {
     "title": "Add Expense",
@@ -35,7 +36,16 @@
     "descriptionPlaceholder": "What was this expense for?",
     "create": "Create Expense",
     "or": "or",
-    "scanReceipt": "Scan Receipt"
+    "scanReceipt": "Scan Receipt",
+    "parsingReceipt": "Receipt attached—parsing now.",
+    "scanningStarted": "Starting receipt scan...",
+    "scanningComplete": "Receipt scanned successfully.",
+    "expenseCreated": "Expense added.",
+    "successAlert": "Expense added.",
+    "defaultTitle": "New Expense",
+    "splitMethod": "How to split?",
+    "rateError": "Couldn’t fetch today’s rate. Saved—will update soon.",
+    "ocrError": "We couldn’t read this receipt. You can edit and retry."
   },
   "groups": {
     "title": "Groups",

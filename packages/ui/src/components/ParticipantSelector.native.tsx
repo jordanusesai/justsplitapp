@@ -8,8 +8,6 @@ import {
   FlatList, 
   Image 
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@justsplitapp/tokens';
 
 export interface Participant {
@@ -34,7 +32,6 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
   disabled = false,
   style,
 }) => {
-  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -77,7 +74,7 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
         </View>
         <Text style={styles.participantName}>{item.name}</Text>
         <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
-          {isSelected && <Ionicons name="checkmark" size={16} color="#fff" />}
+          {isSelected && <Text style={styles.checkmark}>✓</Text>}
         </View>
       </TouchableOpacity>
     );
@@ -86,7 +83,7 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
   return (
     <View style={[styles.container, style]}>
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#9CA3AF" style={styles.searchIcon} />
+        <Text style={styles.searchIcon}>🔍</Text>
         <TextInput
           style={styles.searchInput}
           value={searchQuery}
@@ -94,7 +91,7 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
           editable={!disabled}
-          accessibilityLabel={t('participants.searchLabel', 'Search participants')}
+          accessibilityLabel="Search participants"
         />
       </View>
 
@@ -105,14 +102,14 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
         style={styles.list}
         scrollEnabled={false} // Assuming it's inside a ScrollView
         ListEmptyComponent={
-          <Text style={styles.emptyText}>{t('participants.noResults', 'No participants found')}</Text>
+          <Text style={styles.emptyText}>No participants found</Text>
         }
       />
 
       {selectedIds.length > 0 && (
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            {selectedIds.length} {t('participants.selected', 'selected')}
+            {selectedIds.length} selected
           </Text>
           <TouchableOpacity 
             onPress={() => {
@@ -121,7 +118,7 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
             }}
             disabled={disabled}
           >
-            <Text style={styles.clearButton}>{t('common.clear', 'Clear all')}</Text>
+            <Text style={styles.clearButton}>Clear all</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -207,6 +204,11 @@ const styles = StyleSheet.create({
   checkboxSelected: {
     backgroundColor: colors.primary[500],
     borderColor: colors.primary[500],
+  },
+  checkmark: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   footer: {
     flexDirection: 'row',

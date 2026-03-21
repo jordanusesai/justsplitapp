@@ -90,6 +90,32 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   }
 }
 
+export interface Group {
+  id: string
+  name: string
+  description?: string
+  avatar?: string
+  members: string[] // User IDs
+  createdBy: string
+  totalExpenses: number
+  currency: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface CreateGroupDto {
+  name: string
+  description?: string
+  members: string[]
+  currency?: string
+}
+
+export interface UpdateGroupDto {
+  name?: string
+  description?: string
+  members?: string[]
+}
+
 export interface AuthResponse {
   user: User;
   token: string;

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, Button, ExpenseCard } from '@justsplitapp/ui';
 import { ChatMessage } from '@justsplitapp/types';
 import { io, Socket } from 'socket.io-client';
+import { trackEvent, reportError } from '@justsplitapp/utils';
 
 export function ChatPage() {
   const { t } = useTranslation();
@@ -12,13 +13,22 @@ export function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    trackEvent('page_view', { page: 'chat_web' });
     // Connect to the chat namespace
     const socketUrl = import.meta.env.VITE_WS_URL || 'http://localhost:4000';
-    socketRef.current = io(`${socketUrl}/chat`);
+    try {
+      socketRef.current = io(`${socketUrl}/chat`);
 
-    socketRef.current.on('message', (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message]);
-    });
+      socketRef.current.on('message', (message: ChatMessage) => {
+        setMessages((prev) => [...prev, message]);
+      });
+
+      socketRef.current.on('connect_error', (error) => {
+        reportError(error, { context: 'socket_connect_web' });
+      });
+    } catch (error) {
+      reportError(error instanceof Error ? error : new Error(String(error)), { context: 'chat_init_web' });
+    }
 
     return () => {
       socketRef.current?.disconnect();
@@ -43,8 +53,13 @@ export function ChatPage() {
       status: 'sent',
     };
 
-    socketRef.current.emit('sendMessage', newMessage);
-    setInput('');
+    try {
+      socketRef.current.emit('sendMessage', newMessage);
+      trackEvent('chat_message_sent', { type: 'text' });
+      setInput('');
+    } catch (error) {
+      reportError(error instanceof Error ? error : new Error(String(error)), { context: 'chat_send_web' });
+    }
   };
 
   const renderMessage = (msg: ChatMessage) => {
@@ -54,13 +69,16 @@ export function ChatPage() {
       return (
         <div key={msg.id} className="my-4 max-w-sm mx-auto">
           <ExpenseCard
-            title="Shared Expense"
+            title={msg.content}
             amount={42.50}
             currency="USD"
             date={msg.timestamp}
             participants={[{ name: 'Me' }, { name: 'Friend' }]}
-            onApprove={() => console.log('Approved')}
-            onViewReceipt={() => console.log('Viewing receipt')}
+            actions={[
+              { label: t('chat.approve', 'Approve'), onClick: () => console.log('Approved'), variant: 'primary' },
+              { label: t('chat.viewReceipt', 'View'), onClick: () => console.log('Viewing receipt'), variant: 'outline' },
+              { label: t('chat.settle', 'Settle'), onClick: () => console.log('Settle'), variant: 'secondary' },
+            ]}
           />
         </div>
       );

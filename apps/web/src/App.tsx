@@ -9,6 +9,8 @@ const GroupsPage = lazy(() => import('./pages/GroupsPage').then(m => ({ default:
 const ActivityPage = lazy(() => import('./pages/ActivityPage').then(m => ({ default: m.ActivityPage })))
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })))
 const ChatPage = lazy(() => import('./pages/ChatPage').then(m => ({ default: m.ChatPage })))
+const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })))
+const VerifyPage = lazy(() => import('./pages/VerifyPage').then(m => ({ default: m.VerifyPage })))
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
             <Route path="/activity" element={<ActivityPage />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/verify" element={<VerifyPage />} />
           </Routes>
         </Suspense>
       </Layout>

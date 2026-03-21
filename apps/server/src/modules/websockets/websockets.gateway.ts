@@ -9,7 +9,7 @@ import { Server } from 'socket.io'
 })
 export class WebSocketsGateway {
   @WebSocketServer()
-  server: Server
+  server!: Server
 
   @SubscribeMessage('join-split')
   handleJoinSplit(@MessageBody() data: { splitId: string; userId: string }) {

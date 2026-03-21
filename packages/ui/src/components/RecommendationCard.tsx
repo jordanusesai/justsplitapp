@@ -22,6 +22,11 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   onAttach,
   className,
 }) => {
+  const handleViewOnMap = () => {
+    const encodedAddress = encodeURIComponent(address);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
+  };
+
   return (
     <Card className={clsx('overflow-hidden flex flex-col h-full shadow-sm hover:shadow-md transition-shadow', className)}>
       <div className="p-4 flex-1 space-y-2">
@@ -34,21 +39,35 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           )}
         </div>
         <p className="text-xs text-blue-600 font-medium">{category}</p>
-        <p className="text-sm text-gray-500 line-clamp-2">{address}</p>
+        <button 
+          onClick={handleViewOnMap}
+          className="text-sm text-gray-500 line-clamp-2 text-left hover:text-blue-600 transition-colors"
+          title="View on Map"
+        >
+          {address}
+        </button>
         {distance && (
           <p className="text-xs text-gray-400">
             {distance < 1000 ? `${distance}m away` : `${(distance / 1000).toFixed(1)}km away`}
           </p>
         )}
       </div>
-      <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+      <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex gap-2">
+        <Button 
+          variant="primary" 
+          size="sm" 
+          onClick={onAttach} 
+          className="flex-1 text-xs min-h-[36px]"
+        >
+          Attach
+        </Button>
         <Button 
           variant="outline" 
           size="sm" 
-          onClick={onAttach} 
-          className="w-full text-xs min-h-[36px]"
+          onClick={handleViewOnMap} 
+          className="flex-1 text-xs min-h-[36px]"
         >
-          Attach to Expense
+          Map
         </Button>
       </div>
     </Card>

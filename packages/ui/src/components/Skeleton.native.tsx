@@ -49,7 +49,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
       style={[
         styles.base,
         getVariantStyle(),
-        { width, height, opacity },
+        { width: typeof width === 'string' ? parseFloat(width) || 100 : width, height: typeof height === 'string' ? parseFloat(height) || 100 : height, opacity },
         style,
       ]}
     />

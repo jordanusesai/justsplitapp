@@ -4,16 +4,15 @@ import { Card } from './Card.native';
 import { Button } from './Button.native';
 import { colors } from '@justsplitapp/tokens';
 
+import { ActionChips, ActionChipProps } from './ActionChips.native';
+
 export interface ExpenseCardProps {
   title: string;
   amount: number;
   currency: string;
   date: string;
   participants: Array<{ name: string; avatar?: string }>;
-  onApprove?: () => void;
-  onAdjust?: () => void;
-  onSettle?: () => void;
-  onViewReceipt?: () => void;
+  actions?: ActionChipProps[];
   style?: any;
 }
 
@@ -23,10 +22,7 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
   currency,
   date,
   participants,
-  onApprove,
-  onAdjust,
-  onSettle,
-  onViewReceipt,
+  actions = [],
   style,
 }) => {
   const formattedAmount = new Intl.NumberFormat('en-US', {
@@ -64,28 +60,11 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
         ))}
       </View>
 
-      <View style={styles.actionsGrid}>
-        {onApprove && (
-          <Button variant="primary" size="sm" onPress={onApprove} style={styles.actionButton}>
-            Approve
-          </Button>
-        )}
-        {onAdjust && (
-          <Button variant="outline" size="sm" onPress={onAdjust} style={styles.actionButton}>
-            Adjust
-          </Button>
-        )}
-        {onSettle && (
-          <Button variant="secondary" size="sm" onPress={onSettle} style={styles.actionButton}>
-            Settle
-          </Button>
-        )}
-        {onViewReceipt && (
-          <Button variant="outline" size="sm" onPress={onViewReceipt} style={styles.actionButton}>
-            View Receipt
-          </Button>
-        )}
-      </View>
+      {actions.length > 0 && (
+        <View style={styles.actionsContainer}>
+          <ActionChips actions={actions} />
+        </View>
+      )}
     </Card>
   );
 };
@@ -148,13 +127,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#4B5563',
   },
-  actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  actionButton: {
-    flex: 1,
-    minWidth: '45%',
+  actionsContainer: {
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
   },
 });

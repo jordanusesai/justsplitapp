@@ -17,6 +17,7 @@ import { io, Socket } from 'socket.io-client';
 import { ChatMessage } from '@justsplitapp/types';
 import { Ionicons } from '@expo/vector-icons';
 import { ExpenseCard, Button } from '@justsplitapp/ui';
+import { trackEvent, reportError } from '@justsplitapp/utils';
 
 export default function GroupDetailScreen() {
   const { id, name } = useLocalSearchParams<{ id: string; name: string }>();
@@ -28,22 +29,33 @@ export default function GroupDetailScreen() {
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
+    trackEvent('page_view', { page: 'chat_mobile', groupId: id });
     // Use environment variable or fallback for development
     const socketUrl = process.env.EXPO_PUBLIC_WS_URL || 'http://localhost:4000';
-    socketRef.current = io(`${socketUrl}/chat`);
+    try {
+      socketRef.current = io(`${socketUrl}/chat`);
 
-    socketRef.current.on('connect', () => {
-      setIsConnected(true);
-      socketRef.current?.emit('joinRoom', id);
-    });
+      socketRef.current.on('connect', () => {
+        setIsConnected(true);
+        socketRef.current?.emit('joinRoom', id);
+        trackEvent('chat_connected_mobile', { groupId: id });
+      });
 
-    socketRef.current.on('disconnect', () => {
-      setIsConnected(false);
-    });
+      socketRef.current.on('disconnect', () => {
+        setIsConnected(false);
+        trackEvent('chat_disconnected_mobile', { groupId: id });
+      });
 
-    socketRef.current.on('message', (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message]);
-    });
+      socketRef.current.on('message', (message: ChatMessage) => {
+        setMessages((prev) => [...prev, message]);
+      });
+
+      socketRef.current.on('connect_error', (error) => {
+        reportError(error, { context: 'socket_connect_mobile', groupId: id });
+      });
+    } catch (error) {
+      reportError(error instanceof Error ? error : new Error(String(error)), { context: 'chat_init_mobile' });
+    }
 
     return () => {
       socketRef.current?.disconnect();
@@ -63,8 +75,13 @@ export default function GroupDetailScreen() {
       status: 'sent',
     };
 
-    socketRef.current.emit('sendMessage', { ...newMessage, roomId: id });
-    setInput('');
+    try {
+      socketRef.current.emit('sendMessage', { ...newMessage, roomId: id });
+      trackEvent('chat_message_sent_mobile', { type: 'text', groupId: id });
+      setInput('');
+    } catch (error) {
+      reportError(error instanceof Error ? error : new Error(String(error)), { context: 'chat_send_mobile' });
+    }
   };
 
   const renderMessage = ({ item }: { item: ChatMessage }) => {

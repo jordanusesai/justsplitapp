@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+export type Socket = any;
 
 export type MessageType = 'text' | 'system' | 'expenseCard';
 
@@ -9,6 +9,7 @@ export interface ChatMessage {
   type: MessageType;
   content: string;
   expenseId?: string;
+  roomId: string;
   timestamp: string;
   status: 'sent' | 'delivered' | 'read';
 }

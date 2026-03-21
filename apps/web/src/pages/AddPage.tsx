@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { AmountInput, ParticipantSelector, Button, Card, ReceiptCard, SplitSelector } from '@justsplitapp/ui'
 import { OCRResult, ParticipantSplit, CreateSplitDto, ChatMessage } from '@justsplitapp/types'
 import { io, Socket } from 'socket.io-client'
+import { trackEvent, reportError } from '@justsplitapp/utils'
 
 export function AddPage() {
   const { t } = useTranslation()
@@ -21,16 +22,11 @@ export function AddPage() {
   useEffect(() => {
     const socketUrl = import.meta.env.VITE_WS_URL || 'http://localhost:4000'
     socketRef.current = io(`${socketUrl}/chat`)
+    trackEvent('page_view', { page: 'add_expense' })
     return () => {
       socketRef.current?.disconnect()
     }
   }, [])
-
-  const mockParticipants = [
-    { id: '1', name: 'John Doe', avatar: '' },
-    { id: '2', name: 'Jane Smith', avatar: '' },
-    { id: '3', name: 'Bob Johnson', avatar: '' },
-  ]
 
   // Mock currency rate fetch
   useEffect(() => {
@@ -43,9 +39,16 @@ export function AddPage() {
     }
   }, [amount, currency])
 
+  const mockParticipants = [
+    { id: '1', name: 'John Doe', avatar: '' },
+    { id: '2', name: 'Jane Smith', avatar: '' },
+    { id: '3', name: 'Bob Johnson', avatar: '' },
+  ]
+
   const handleParticipantsChange = (selectedIds: string[]) => {
     const selected = mockParticipants.filter(p => selectedIds.includes(p.id))
     setSelectedParticipants(selected)
+    trackEvent('participants_selected', { count: selected.length })
   }
 
   const handleScanReceipt = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,26 +57,34 @@ export function AddPage() {
 
     setOcrStatus('scanning')
     setSrAnnouncement(t('addExpense.scanningStarted', 'Starting receipt scan...'))
+    trackEvent('ocr_scan_started', { file_type: file.type, file_size: file.size })
 
     setTimeout(() => {
-      const result: OCRResult = {
-        merchant: 'Whole Foods Market',
-        date: new Date().toISOString(),
-        total: 42.50,
-        tax: 3.50,
-        confidence: 0.95,
-        items: [
-          { description: 'Organic Milk', amount: 5.99, quantity: 1 },
-          { description: 'Avocados (3ct)', amount: 4.50, quantity: 1 },
-          { description: 'Whole Wheat Bread', amount: 3.99, quantity: 1 },
-          { description: 'Chicken Breast', amount: 12.50, quantity: 1 },
-          { description: 'Sparkling Water (12pk)', amount: 12.02, quantity: 1 },
-        ],
+      try {
+        const result: OCRResult = {
+          merchant: 'Whole Foods Market',
+          date: new Date().toISOString(),
+          total: 42.50,
+          tax: 3.50,
+          confidence: 0.95,
+          items: [
+            { description: 'Organic Milk', amount: 5.99, quantity: 1 },
+            { description: 'Avocados (3ct)', amount: 4.50, quantity: 1 },
+            { description: 'Whole Wheat Bread', amount: 3.99, quantity: 1 },
+            { description: 'Chicken Breast', amount: 12.50, quantity: 1 },
+            { description: 'Sparkling Water (12pk)', amount: 12.02, quantity: 1 },
+          ],
+        }
+        setOcrResult(result)
+        setAmount(result.total)
+        setOcrStatus('completed')
+        setSrAnnouncement(t('addExpense.scanningComplete', 'Receipt scanned successfully. Total amount updated.'))
+        trackEvent('ocr_scan_success', { merchant: result.merchant, total: result.total, confidence: result.confidence })
+      } catch (error) {
+        setOcrStatus('error')
+        reportError(error instanceof Error ? error : new Error(String(error)), { context: 'ocr_scan' })
+        trackEvent('ocr_scan_failed')
       }
-      setOcrResult(result)
-      setAmount(result.total)
-      setOcrStatus('completed')
-      setSrAnnouncement(t('addExpense.scanningComplete', 'Receipt scanned successfully. Total amount updated.'))
     }, 2000)
   }
 
@@ -94,6 +105,8 @@ export function AddPage() {
       exchangeRateTimestamp: rateInfo?.timestamp,
     }
 
+    trackEvent('expense_creation_started', { amount, currency, participant_count: selectedParticipants.length })
+
     // Post to chat if connected
     if (socketRef.current) {
       const chatMsg: Partial<ChatMessage> = {
@@ -111,12 +124,11 @@ export function AddPage() {
     // Simulate navigation/success before server confirms
     setTimeout(() => {
       setSrAnnouncement(t('addExpense.expenseCreated', 'Expense created successfully with locked exchange rate.'))
-      // In a real app, we would use navigate('/activity') or similar
-      alert(t('addExpense.successAlert', 'Expense saved! (Optimistic update)'))
+      trackEvent('expense_creation_success', { id: payload.title })
+      alert(t('addExpense.successAlert', 'Expense added.'))
     }, 500)
 
     console.log('Creating expense with rate-lock:', payload)
-    
     // In a real app, this would be a fetch/axios call to /api/splits
     // await fetch('/api/splits', { method: 'POST', body: JSON.stringify(payload) })
   }
